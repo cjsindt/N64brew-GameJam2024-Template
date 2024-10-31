@@ -6,8 +6,15 @@
 #include "../../core.h"
 #include "../../minigame.h"
 
+#include <stdlib.h>
+
 /* ---------- MACROS ---------- */
-#define MAZE_SIZE 16    // maze is a square of length MAZE_SIZE
+#define MAZE_SIZE 16                                    // maze is a square of length MAZE_SIZE
+#define MIN_NEIGHBOR(a, b, c, d)   \
+    ((a) <= (b) && (a) <= (c) && (a) <= (d) ? 1 : \
+     (b) <= (a) && (b) <= (c) && (b) <= (d) ? 2 : \
+     (c) <= (a) && (c) <= (b) && (c) <= (d) ? 3 : 4)
+
 
 const MinigameDef minigame_def = {
     .gamename = "Example Game",
@@ -20,11 +27,49 @@ const MinigameDef minigame_def = {
     generate_maze
     Maze generation function
 ==============================*/
-void generate_maze()
+void generate_maze_edges()
 {
+    // initialize maze array
+    int maze[MAZE_SIZE][MAZE_SIZE] = {0};
+    for (int i = 0; i < MAZE_SIZE; i++)
+    {
+        for (int j = 0; j < MAZE_SIZE; j++)
+        {
+            maze[i][j] = rand();
+        }
+    }
 
-    int maze[MAZE_SIZE][MAZE_SIZE] = {0}; 
 
+}
+
+void draw_maze(int (*edges)[MAZE_SIZE])
+{
+    int size = (2 * MAZE_SIZE) + 1;
+    char maze[MAZE_SIZE + 1][size];
+    
+    // initialize maze printout
+    for (int row = 0; row < MAZE_SIZE + 1; row++)
+    {   
+        for (int col = 0; col < size - 1;)
+        {
+            int i = col;
+            //printf("%d\n", i);
+            maze[row][col++] = (row == 0) ? ' ' : ((edges[row-1][i/2 - 1] == 2) || (edges[row-1][i/2] == 4)) && (col != 0) ? ' ' : '|';
+            //printf("%d %d\n", row, i);
+            maze[row][col++] = (row != 0) && (row != MAZE_SIZE) && ((edges[row-1][i/2] == 3) || (edges[row][i/2] == 1)) ? ' ' : '_';
+        }
+        maze[row][size - 1] = (row == 0) ? ' ' : '|';
+    }
+    
+    // print maze
+    for (int row = 0; row <  MAZE_SIZE + 1; row++)
+    {
+        for (int col = 0; col < size; col++)
+        {
+            printf("%c", maze[row][col]);
+        }
+        printf("\n");
+    }
 }
 
 /*==============================
