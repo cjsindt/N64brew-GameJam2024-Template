@@ -31,6 +31,7 @@ int processNode(int visitedNode, char* visited, int* neighbors, int* numNeighbor
     int dirs[4] = {1, 2, 3, 4};
     
     // if above node exists and has not been visited, add it to neighbors
+    // also remove direction 1 if no above node exists, or it exists but has been visited
     if (visitedNode > (MAZE_SIZE - 1) )
     {
         if (visited[visitedNode - MAZE_SIZE] == 0)
@@ -43,7 +44,9 @@ int processNode(int visitedNode, char* visited, int* neighbors, int* numNeighbor
     {
         removeDirection(dirs, &numDirs, 1);
     }
+
     // if right node exists and has not been visited, add it to neighbors
+    // also remove direction 2 if no right node exists, or it exists but has been visited
     if (visitedNode % MAZE_SIZE != (MAZE_SIZE - 1))
     {
         if (visited[visitedNode + 1] == 0)
@@ -56,7 +59,9 @@ int processNode(int visitedNode, char* visited, int* neighbors, int* numNeighbor
     {
         removeDirection(dirs, &numDirs, 2);
     }
+
     // if below node exists and has not been visited, add it to neighbors
+    // also remove direction 3 if no below node exists, or it exists but has been visited
     if (visitedNode < (MAZE_SIZE * MAZE_SIZE) - MAZE_SIZE)
     {
         if (visited[visitedNode + MAZE_SIZE] == 0)
@@ -69,7 +74,9 @@ int processNode(int visitedNode, char* visited, int* neighbors, int* numNeighbor
     {
         removeDirection(dirs, &numDirs, 3);
     }
+
     // if left node exists and has not been visited, add it to neighbors
+    // also remove direction 4 if no left node exists, or it exists but has been visited
     if (visitedNode % MAZE_SIZE != 0)
     {
         if (visited[visitedNode - 1] == 0)
@@ -82,11 +89,12 @@ int processNode(int visitedNode, char* visited, int* neighbors, int* numNeighbor
     {
         removeDirection(dirs, &numDirs, 4);
     }
-    //printf("numdirs: %d\n", numDirs);
+
     if(numDirs)
     {
         return dirs[rand() % numDirs];
     }
+
     return rand() % 4 + 1;
 }
 
@@ -118,33 +126,18 @@ int** generateMaze()
         neighbors[n] = neighbors[--numNeighbors];
         visited[nodeToVisit] = 1;
         numVisited++;
-        //printf("nodeToVisit: %d\n", nodeToVisit);
-        //printf("%d \n", processNode(nodeToVisit, visited, neighbors, &numNeighbors));
         map[nodeToVisit / MAZE_SIZE][nodeToVisit % MAZE_SIZE] = processNode(nodeToVisit, visited, neighbors, &numNeighbors);
-    }
-
-    for (int i = 0; i < MAZE_SIZE * MAZE_SIZE; i++)
-    {
-        //printf("%d ", visited[i]);
-    }
-    //printf("\n%d\n", numVisited);
-    
-    for (int i = 0; i < MAZE_SIZE * MAZE_SIZE; i++)
-    {
-       // printf("%d ", neighbors[i]);
-    }
-    //printf("\n%d\n", numNeighbors);
-    
-    for (int row = 0; row < MAZE_SIZE; row++)
-    {
-        for (int col = 0; col < MAZE_SIZE; col++)
-        {
-            //printf("%d ", map[row][col]);
-        }
-        //printf("\n");
     }
     
     return map;
+}
+
+void freeMaze(int** edges)
+{
+    for (int i = 0; i < MAZE_SIZE; i++) {
+        free(edges[i]);
+    }
+    free(edges);
 }
 
 void drawMaze(int **edges)
@@ -157,12 +150,9 @@ void drawMaze(int **edges)
     {   
         for (int col = 0; col < size - 1;)
         {
-            int i = col;
-            //printf("%d\n", i);
-            maze[row][col] = (row == 0) ? ' ' : ((edges[row-1][i/2 - 1] == 2) || (edges[row-1][i/2] == 4)) && (col != 0) ? ' ' : '|';
+            maze[row][col] = (row == 0) ? ' ' : ((edges[row-1][col/2 - 1] == 2) || (edges[row-1][col/2] == 4)) && (col != 0) ? ' ' : '|';
             col+=1;
-            //printf("%d %d\n", row, i);
-            maze[row][col] = (row != 0) && (row != MAZE_SIZE) && ((edges[row-1][i/2] == 3) || (edges[row][i/2] == 1)) ? ' ' : '_';
+            maze[row][col] = (row != 0) && (row != MAZE_SIZE) && ((edges[row-1][col/2] == 3) || (edges[row][col/2] == 1)) ? ' ' : '_';
             col+=1;
         }
         maze[row][size - 1] = (row == 0) ? ' ' : '|';

@@ -15,19 +15,15 @@ const MinigameDef minigame_def = {
 };
 
 /*==============================
-    generate_maze
-    Maze generation function
-==============================*/
-
-
-/*==============================
     minigame_init
     The minigame initialization function
 ==============================*/
 void minigame_init()
 {
     console_init();
-    drawMaze(generateMaze());
+    int** maze = generateMaze();
+    drawMaze(maze);
+    freeMaze(maze);
 }
 
 /*==============================
