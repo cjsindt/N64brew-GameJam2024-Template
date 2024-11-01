@@ -99,13 +99,8 @@ int processNode(int visitedNode, char* visited, int* neighbors, int* numNeighbor
 }
 
 
-int** generateMaze()
-{
-    int** map = malloc(MAZE_SIZE * sizeof(int*));
-    for (int i = 0; i < MAZE_SIZE; i++) {
-        map[i] = malloc(MAZE_SIZE * sizeof(int));
-    }
-    
+void generateMaze(uint8_t **maze)
+{   
     int numVisited = 1;
     char visited[MAZE_SIZE * MAZE_SIZE] = {0};
     
@@ -117,7 +112,7 @@ int** generateMaze()
     
     processNode(source, visited, neighbors, &numNeighbors);
     
-    map[source / MAZE_SIZE][source % MAZE_SIZE] = 0;
+    maze[source / MAZE_SIZE][source % MAZE_SIZE] = 0;
     
     while (numNeighbors > 0)
     {
@@ -126,30 +121,30 @@ int** generateMaze()
         neighbors[n] = neighbors[--numNeighbors];
         visited[nodeToVisit] = 1;
         numVisited++;
-        map[nodeToVisit / MAZE_SIZE][nodeToVisit % MAZE_SIZE] = processNode(nodeToVisit, visited, neighbors, &numNeighbors);
+        maze[nodeToVisit / MAZE_SIZE][nodeToVisit % MAZE_SIZE] = processNode(nodeToVisit, visited, neighbors, &numNeighbors);
     }
     
     for (int row = 0; row < MAZE_SIZE; row++)
     {
         for (int col = 0; col < MAZE_SIZE; col++)
         {
-            printf("%d ", map[row][col]);
+            printf("%d ", maze[row][col]);
         }
         printf("\n");
     }
-
-    return map;
 }
 
-void freeMaze(int** edges)
+void freeMaze(uint8_t** maze)
 {
     for (int i = 0; i < MAZE_SIZE; i++) {
-        free(edges[i]);
+        free_uncached(maze[i]);
+        maze[i] = NULL;
     }
-    free(edges);
+    free_uncached(maze);
+    maze = NULL;
 }
 
-void drawMaze(int **edges)
+void drawMaze(uint8_t **edges)
 {
     int size = (2 * MAZE_SIZE) + 1;
     char maze[MAZE_SIZE + 1][size];

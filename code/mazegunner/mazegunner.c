@@ -14,17 +14,23 @@ const MinigameDef minigame_def = {
     .instructions = "A to shoot. Stick to move."
 };
 
+uint8_t** maze;
+
 /*==============================
     minigame_init
     The minigame initialization function
 ==============================*/
 void minigame_init()
 {
+    maze = malloc_uncached(MAZE_SIZE * sizeof(uint8_t*));
+    for (int i = 0; i < MAZE_SIZE; i++) {
+        maze[i] = malloc_uncached(MAZE_SIZE * sizeof(uint8_t));
+    }
     console_init();
     printf("Press A to draw new maze\n\n");
-    int** maze = generateMaze();
+    generateMaze(maze);
     drawMaze(maze);
-    freeMaze(maze);
+    printf("\nPress B to go back to menu\n");
 }
 
 /*==============================
@@ -54,9 +60,14 @@ void minigame_loop(float deltatime)
         {
             console_clear();
             printf("Press A to draw new maze\n\n");
-            int** maze = generateMaze();
+            generateMaze(maze);
             drawMaze(maze);
-            freeMaze(maze);
+            printf("\nPress B to go back to menu\n");
+        }
+
+        if (btn.b)
+        {
+            minigame_end();
         }
     }
 }
@@ -67,5 +78,7 @@ void minigame_loop(float deltatime)
 ==============================*/
 void minigame_cleanup()
 {
-
+    freeMaze(maze);
+    console_clear();
+    console_close();
 }
