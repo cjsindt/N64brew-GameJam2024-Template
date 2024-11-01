@@ -21,6 +21,7 @@ const MinigameDef minigame_def = {
 void minigame_init()
 {
     console_init();
+    printf("Press A to draw new maze\n\n");
     int** maze = generateMaze();
     drawMaze(maze);
     freeMaze(maze);
@@ -45,7 +46,19 @@ void minigame_fixedloop(float deltatime)
 ==============================*/
 void minigame_loop(float deltatime)
 {
-
+    for (size_t i = 0; i < core_get_playercount(); i++)
+    {
+        // For human players, check if the physical A button on the controller was pressed
+        joypad_buttons_t btn = joypad_get_buttons_pressed(core_get_playercontroller(i));
+        if (btn.a)
+        {
+            console_clear();
+            printf("Press A to draw new maze\n\n");
+            int** maze = generateMaze();
+            drawMaze(maze);
+            freeMaze(maze);
+        }
+    }
 }
 
 /*==============================

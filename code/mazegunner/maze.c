@@ -129,6 +129,15 @@ int** generateMaze()
         map[nodeToVisit / MAZE_SIZE][nodeToVisit % MAZE_SIZE] = processNode(nodeToVisit, visited, neighbors, &numNeighbors);
     }
     
+    for (int row = 0; row < MAZE_SIZE; row++)
+    {
+        for (int col = 0; col < MAZE_SIZE; col++)
+        {
+            printf("%d ", map[row][col]);
+        }
+        printf("\n");
+    }
+
     return map;
 }
 
