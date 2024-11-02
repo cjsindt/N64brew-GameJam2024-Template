@@ -14,7 +14,7 @@ const MinigameDef minigame_def = {
     .instructions = "A to shoot. Stick to move."
 };
 
-node** map;
+node** GameMap;
 
 /*==============================
     minigame_init
@@ -22,14 +22,14 @@ node** map;
 ==============================*/
 void minigame_init()
 {
-    map = malloc_uncached(MAZE_SIZE * sizeof(node*));
+    GameMap = malloc_uncached(MAZE_SIZE * sizeof(node*));
     for (int i = 0; i < MAZE_SIZE; i++) {
-        map[i] = malloc_uncached(MAZE_SIZE * sizeof(node*));
+        GameMap[i] = malloc_uncached(MAZE_SIZE * sizeof(node*));
     }
     console_init();
     printf("Press A to draw new maze\n\n");
-    generateMap(map);
-    drawMap(map);
+    generateMap(GameMap, 60);
+    drawMap(GameMap);
     printf("\nPress B to go back to menu\n");
 }
 
@@ -60,8 +60,8 @@ void minigame_loop(float deltatime)
         {
             console_clear();
             printf("Press A to draw new maze\n\n");
-            generateMap(map);
-            drawMap(map);
+            generateMap(GameMap, 60);
+            drawMap(GameMap);
             printf("\nPress B to go back to menu\n");
         }
 
@@ -78,7 +78,7 @@ void minigame_loop(float deltatime)
 ==============================*/
 void minigame_cleanup()
 {
-    freeMap(map);
+    freeMap(GameMap);
     console_clear();
     console_close();
 }
