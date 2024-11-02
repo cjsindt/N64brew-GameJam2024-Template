@@ -1,9 +1,14 @@
 #define MAZE_SIZE 10
 
-// Generate a MAZE_SIZE x MAZE_SIZE connected maze
-void generateMaze(uint8_t **maze);
+typedef struct node_t
+{
+    uint8_t walls[4];
+} node;
 
-void freeMaze(uint8_t** edges);
+// Generate a MAZE_SIZE x MAZE_SIZE connected maze
+void generateMap(node **map);
+
+void freeMap(node** map);
 
 // Draw a given maze from generateMaze()
-void drawMaze(uint8_t** edges);
+void drawMap(node **map);
