@@ -73,11 +73,11 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
     
     /* if above node exists and has not been visited, add it to neighbors                 */
     /* also remove direction 1 if no above node exists, or it exists but has been visited */
-    if (visitedNode > (MAZE_SIZE - 1) )
+    if (visitedNode > (MAP_SIZE - 1) )
     {
-        if (visited[visitedNode - MAZE_SIZE] == 0)
+        if (visited[visitedNode - MAP_SIZE] == 0)
         {
-             addNeighbor(visitedNode - MAZE_SIZE, neighbors, numNeighbors);
+             addNeighbor(visitedNode - MAP_SIZE, neighbors, numNeighbors);
              removeDirection(dirs, &numDirs, 1);
         }
     }
@@ -88,7 +88,7 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
 
     /* if right node exists and has not been visited, add it to neighbors                 */
     /* also remove direction 2 if no right node exists, or it exists but has been visited */
-    if (visitedNode % MAZE_SIZE != (MAZE_SIZE - 1))
+    if (visitedNode % MAP_SIZE != (MAP_SIZE - 1))
     {
         if (visited[visitedNode + 1] == 0)
         {
@@ -103,11 +103,11 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
 
     /* if below node exists and has not been visited, add it to neighbors                 */
     /* also remove direction 3 if no below node exists, or it exists but has been visited */
-    if (visitedNode < (MAZE_SIZE * MAZE_SIZE) - MAZE_SIZE)
+    if (visitedNode < (MAP_SIZE * MAP_SIZE) - MAP_SIZE)
     {
-        if (visited[visitedNode + MAZE_SIZE] == 0)
+        if (visited[visitedNode + MAP_SIZE] == 0)
         {
-            addNeighbor(visitedNode + MAZE_SIZE, neighbors, numNeighbors);
+            addNeighbor(visitedNode + MAP_SIZE, neighbors, numNeighbors);
             removeDirection(dirs, &numDirs, 3);
         }
     }
@@ -118,7 +118,7 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
 
     /* if left node exists and has not been visited, add it to neighbors                 */
     /* also remove direction 4 if no left node exists, or it exists but has been visited */
-    if (visitedNode % MAZE_SIZE != 0)
+    if (visitedNode % MAP_SIZE != 0)
     {
         if (visited[visitedNode - 1] == 0)
         {
@@ -151,11 +151,11 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
  *************************************************************/
 void drawMap(node **map)
 {
-    int size = (2 * MAZE_SIZE) + 1;
-    char disp[MAZE_SIZE + 1][size];
+    int size = (2 * MAP_SIZE) + 1;
+    char disp[MAP_SIZE + 1][size];
 
     /* initialize disp to all whitespace */
-    for (int r = 0; r < MAZE_SIZE + 1; r++)
+    for (int r = 0; r < MAP_SIZE + 1; r++)
     {
         for (int c = 0; c < size; c++)
         {
@@ -169,19 +169,19 @@ void drawMap(node **map)
         disp[0][i] = ' ';
         disp[0][i+1] = '_';
         
-        disp[MAZE_SIZE][i] = ' ';
-        disp[MAZE_SIZE][i+1] = '_';
+        disp[MAP_SIZE][i] = ' ';
+        disp[MAP_SIZE][i+1] = '_';
     }
     
     /* add walls to left and right side */
-    for (int i = 1; i < MAZE_SIZE + 1; i++)
+    for (int i = 1; i < MAP_SIZE + 1; i++)
     {
         disp[i][0] = '|';
         disp[i][size-1] = '|';
     }
     
     /* go cell by cell and fill in walls based on map information */
-    for (int row = 1; row < MAZE_SIZE + 1; row++)
+    for (int row = 1; row < MAP_SIZE + 1; row++)
     {   
         for (int col = 1; col < size - 1; col+=2)
         {
@@ -193,7 +193,7 @@ void drawMap(node **map)
     }
     
     /* print out each char */
-    for (int row = 0; row <  MAZE_SIZE + 1; row++)
+    for (int row = 0; row <  MAP_SIZE + 1; row++)
     {
         for (int col = 0; col < size; col++)
         {
@@ -249,21 +249,21 @@ void generateMap(node **map, uint8_t pruneFactor)
     /* 0 - not visited                                   */
     /* 1 - visited                                       */
     int numVisited = 1;
-    uint8_t visited[MAZE_SIZE * MAZE_SIZE] = {0};
+    uint8_t visited[MAP_SIZE * MAP_SIZE] = {0};
     
     /* keep a list of neighbors */
     int numNeighbors = 0;
-    int neighbors[MAZE_SIZE * MAZE_SIZE] = {0};
+    int neighbors[MAP_SIZE * MAP_SIZE] = {0};
     
     /* choose a random node to start from and process it */
-    int source = rand() % (MAZE_SIZE * MAZE_SIZE);
+    int source = rand() % (MAP_SIZE * MAP_SIZE);
     visited[source] = 1;
     
     processNode(source, visited, neighbors, &numNeighbors);
     
     /* store the maze for further processing */
-    uint8_t maze[MAZE_SIZE][MAZE_SIZE];
-    maze[source / MAZE_SIZE][source % MAZE_SIZE] = 0;
+    uint8_t maze[MAP_SIZE][MAP_SIZE];
+    maze[source / MAP_SIZE][source % MAP_SIZE] = 0;
     
     /* keep visiting nodes until no more neighbors remain */
     while (numNeighbors > 0)
@@ -273,15 +273,15 @@ void generateMap(node **map, uint8_t pruneFactor)
         neighbors[n] = neighbors[--numNeighbors];
         visited[nodeToVisit] = 1;
         numVisited++;
-        maze[nodeToVisit / MAZE_SIZE][nodeToVisit % MAZE_SIZE] = processNode(nodeToVisit, visited, neighbors, &numNeighbors);
+        maze[nodeToVisit / MAP_SIZE][nodeToVisit % MAP_SIZE] = processNode(nodeToVisit, visited, neighbors, &numNeighbors);
     }
     
     
     /* convert connected maze to a map of nodes */
     node n;
-    for (int row = 0; row < MAZE_SIZE; row++)
+    for (int row = 0; row < MAP_SIZE; row++)
     {
-        for (int col = 0; col < MAZE_SIZE; col++)
+        for (int col = 0; col < MAP_SIZE; col++)
         {
             /* reset n */
             for (int i = 0; i < 4; i++)
@@ -297,8 +297,8 @@ void generateMap(node **map, uint8_t pruneFactor)
             
             /* find neighboring walls to remove */
             n.walls[0] = n.walls[0] ? ((row != 0) && (maze[row-1][col] == 3) ? 0 : 1) : 0;
-            n.walls[1] = n.walls[1] ? ((col != (MAZE_SIZE - 1)) && (maze[row][col+1] == 4) ? 0 : 1) : 0;
-            n.walls[2] = n.walls[2] ? ((row != (MAZE_SIZE - 1)) && (maze[row+1][col] == 1) ? 0 : 1) : 0;
+            n.walls[1] = n.walls[1] ? ((col != (MAP_SIZE - 1)) && (maze[row][col+1] == 4) ? 0 : 1) : 0;
+            n.walls[2] = n.walls[2] ? ((row != (MAP_SIZE - 1)) && (maze[row+1][col] == 1) ? 0 : 1) : 0;
             n.walls[3] = n.walls[3] ? ((col != 0) && (maze[row][col-1] == 2) ? 0 : 1) : 0;
             
             map[row][col] = n;
@@ -310,9 +310,9 @@ void generateMap(node **map, uint8_t pruneFactor)
     /*      1. array overflow/underflow                                            */
     /*      2. potential line of sight to opponent at start of match               */
     /*         (still possible by random chance, but less likely when not pruning) */
-    for (int row = 1; row < MAZE_SIZE - 1; row++)
+    for (int row = 1; row < MAP_SIZE - 1; row++)
     {
-        for (int col = 1; col < MAZE_SIZE - 1; col++)
+        for (int col = 1; col < MAP_SIZE - 1; col++)
         {
             /* randomly determine if node will be pruned */
             if ((rand() % 100) < pruneFactor)
@@ -327,7 +327,7 @@ void generateMap(node **map, uint8_t pruneFactor)
     /* to keep from sealing off players, open the adjacent walls         */
 
     /* top wall */
-    uint8_t val = rand() % ((MAZE_SIZE - (MAZE_SIZE / 4)) + 1 - (MAZE_SIZE / 2)) + (MAZE_SIZE / 4);
+    uint8_t val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
     map[0][val].walls[1] = 1;
     map[0][val].walls[2] = 0;
     map[0][val + 1].walls[3] = 1;
@@ -338,18 +338,18 @@ void generateMap(node **map, uint8_t pruneFactor)
     map[1][val + 1].walls[3] = 0;
 
     /* bottom wall */
-    val = rand() % ((MAZE_SIZE - (MAZE_SIZE / 4)) + 1 - (MAZE_SIZE / 2)) + (MAZE_SIZE / 4);
-    map[MAZE_SIZE - 1][val].walls[1] = 1;
-    map[MAZE_SIZE - 1][val].walls[0] = 0;
-    map[MAZE_SIZE - 1][val + 1].walls[3] = 1;
-    map[MAZE_SIZE - 1][val + 1].walls[0] = 0;
-    map[MAZE_SIZE - 2][val].walls[2] = 0;
-    map[MAZE_SIZE - 2][val].walls[1] = 0;
-    map[MAZE_SIZE - 2][val + 1].walls[2] = 0;
-    map[MAZE_SIZE - 2][val + 1].walls[3] = 0;
+    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    map[MAP_SIZE - 1][val].walls[1] = 1;
+    map[MAP_SIZE - 1][val].walls[0] = 0;
+    map[MAP_SIZE - 1][val + 1].walls[3] = 1;
+    map[MAP_SIZE - 1][val + 1].walls[0] = 0;
+    map[MAP_SIZE - 2][val].walls[2] = 0;
+    map[MAP_SIZE - 2][val].walls[1] = 0;
+    map[MAP_SIZE - 2][val + 1].walls[2] = 0;
+    map[MAP_SIZE - 2][val + 1].walls[3] = 0;
 
     /* left wall */
-    val = rand() % ((MAZE_SIZE - (MAZE_SIZE / 4)) + 1 - (MAZE_SIZE / 2)) + (MAZE_SIZE / 4);
+    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
     map[val][0].walls[2] = 1;
     map[val][0].walls[1] = 0;
     map[val + 1][0].walls[0] = 1;
@@ -360,15 +360,15 @@ void generateMap(node **map, uint8_t pruneFactor)
     map[val + 1][1].walls[3] = 0;
 
     /* right wall */
-    val = rand() % ((MAZE_SIZE - (MAZE_SIZE / 4)) + 1 - (MAZE_SIZE / 2)) + (MAZE_SIZE / 4);
-    map[val][MAZE_SIZE - 1].walls[2] = 1;
-    map[val][MAZE_SIZE - 1] .walls[3] = 0;
-    map[val + 1][MAZE_SIZE - 1].walls[0] = 1;
-    map[val + 1][MAZE_SIZE - 1].walls[3] = 0;
-    map[val][MAZE_SIZE - 2].walls[1] = 0;
-    map[val][MAZE_SIZE - 2].walls[2] = 0;
-    map[val + 1][MAZE_SIZE - 2].walls[0] = 0;
-    map[val + 1][MAZE_SIZE - 2].walls[1] = 0;
+    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    map[val][MAP_SIZE - 1].walls[2] = 1;
+    map[val][MAP_SIZE - 1] .walls[3] = 0;
+    map[val + 1][MAP_SIZE - 1].walls[0] = 1;
+    map[val + 1][MAP_SIZE - 1].walls[3] = 0;
+    map[val][MAP_SIZE - 2].walls[1] = 0;
+    map[val][MAP_SIZE - 2].walls[2] = 0;
+    map[val + 1][MAP_SIZE - 2].walls[0] = 0;
+    map[val + 1][MAP_SIZE - 2].walls[1] = 0;
 }
 
 /**************************************************************
@@ -382,7 +382,7 @@ void generateMap(node **map, uint8_t pruneFactor)
  *************************************************************/
 void freeMap(node** map)
 {
-    for (int i = 0; i < MAZE_SIZE; i++) {
+    for (int i = 0; i < MAP_SIZE; i++) {
         free_uncached(map[i]);
         map[i] = NULL;
     }

@@ -22,9 +22,9 @@ node** GameMap;
 ==============================*/
 void minigame_init()
 {
-    GameMap = malloc_uncached(MAZE_SIZE * sizeof(node*));
-    for (int i = 0; i < MAZE_SIZE; i++) {
-        GameMap[i] = malloc_uncached(MAZE_SIZE * sizeof(node*));
+    GameMap = malloc_uncached(MAP_SIZE * sizeof(node*));
+    for (int i = 0; i < MAP_SIZE; i++) {
+        GameMap[i] = malloc_uncached(MAP_SIZE * sizeof(node*));
     }
     console_init();
     printf("Press A to draw new maze\n\n");

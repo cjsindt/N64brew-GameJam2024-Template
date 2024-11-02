@@ -1,5 +1,5 @@
 /* ------------------------ MACROS ------------------------- */
-#define MAZE_SIZE 10
+#define MAP_SIZE 10
 
 /* ------------------- TYPE DEFINITIONS -------------------- */
 typedef struct node_t
