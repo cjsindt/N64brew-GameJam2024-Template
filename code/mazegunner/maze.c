@@ -183,7 +183,7 @@ void drawMap(node **map)
     /* go cell by cell and fill in walls based on map information */
     for (int row = 1; row < MAZE_SIZE + 1; row++)
     {   
-        for (int col = 1; col < size - 2; col+=2)
+        for (int col = 1; col < size - 1; col+=2)
         {
             disp[row-1][col] = map[row-1][((col+1)/2)-1].walls[0] ? '_' : ' ';
             disp[row][col+1] = map[row-1][((col+1)/2)-1].walls[1] ? '|' : ' ';
@@ -322,6 +322,53 @@ void generateMap(node **map, uint8_t pruneFactor)
         }
     }
     
+    /* remove line of sight from players on spawn                        */
+    /* place a wall on each far wall of the maze at some random distance */
+    /* to keep from sealing off players, open the adjacent walls         */
+
+    /* top wall */
+    uint8_t val = rand() % ((MAZE_SIZE - (MAZE_SIZE / 4)) + 1 - (MAZE_SIZE / 2)) + (MAZE_SIZE / 4);
+    map[0][val].walls[1] = 1;
+    map[0][val].walls[2] = 0;
+    map[0][val + 1].walls[3] = 1;
+    map[0][val + 1].walls[2] = 0;
+    map[1][val].walls[0] = 0;
+    map[1][val].walls[1] = 0;
+    map[1][val + 1].walls[0] = 0;
+    map[1][val + 1].walls[3] = 0;
+
+    /* bottom wall */
+    val = rand() % ((MAZE_SIZE - (MAZE_SIZE / 4)) + 1 - (MAZE_SIZE / 2)) + (MAZE_SIZE / 4);
+    map[MAZE_SIZE - 1][val].walls[1] = 1;
+    map[MAZE_SIZE - 1][val].walls[0] = 0;
+    map[MAZE_SIZE - 1][val + 1].walls[3] = 1;
+    map[MAZE_SIZE - 1][val + 1].walls[0] = 0;
+    map[MAZE_SIZE - 2][val].walls[2] = 0;
+    map[MAZE_SIZE - 2][val].walls[1] = 0;
+    map[MAZE_SIZE - 2][val + 1].walls[2] = 0;
+    map[MAZE_SIZE - 2][val + 1].walls[3] = 0;
+
+    /* left wall */
+    val = rand() % ((MAZE_SIZE - (MAZE_SIZE / 4)) + 1 - (MAZE_SIZE / 2)) + (MAZE_SIZE / 4);
+    map[val][0].walls[2] = 1;
+    map[val][0].walls[1] = 0;
+    map[val + 1][0].walls[0] = 1;
+    map[val + 1][0].walls[1] = 0;
+    map[val][1].walls[3] = 0;
+    map[val][1].walls[2] = 0;
+    map[val + 1][1].walls[0] = 0;
+    map[val + 1][1].walls[3] = 0;
+
+    /* right wall */
+    val = rand() % ((MAZE_SIZE - (MAZE_SIZE / 4)) + 1 - (MAZE_SIZE / 2)) + (MAZE_SIZE / 4);
+    map[val][MAZE_SIZE - 1].walls[2] = 1;
+    map[val][MAZE_SIZE - 1] .walls[3] = 0;
+    map[val + 1][MAZE_SIZE - 1].walls[0] = 1;
+    map[val + 1][MAZE_SIZE - 1].walls[3] = 0;
+    map[val][MAZE_SIZE - 2].walls[1] = 0;
+    map[val][MAZE_SIZE - 2].walls[2] = 0;
+    map[val + 1][MAZE_SIZE - 2].walls[0] = 0;
+    map[val + 1][MAZE_SIZE - 2].walls[1] = 0;
 }
 
 /**************************************************************
