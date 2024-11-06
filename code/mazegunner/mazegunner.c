@@ -5,7 +5,7 @@
 #include <libdragon.h>
 #include "../../core.h"
 #include "../../minigame.h"
-#include "maze.h"
+#include "map_gen.h"
 
 const MinigameDef minigame_def = {
     .gamename = "Maze Gunner",
@@ -22,6 +22,16 @@ node** GameMap;
 ==============================*/
 void minigame_init()
 {
+    //display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE_ANTIALIAS);
+    //depthBuffer = display_get_zbuf();
+
+    //t3d_init((T3DInitParams){});
+
+    //T3DMat4 modelMat; // matrix for our model, this is a "normal" float matrix
+    //t3d_mat4_identity(&modelMat);
+    
+    //viewport = t3d_viewport_create();
+
     GameMap = malloc_uncached(MAP_SIZE * sizeof(node*));
     for (int i = 0; i < MAP_SIZE; i++) {
         GameMap[i] = malloc_uncached(MAP_SIZE * sizeof(node*));

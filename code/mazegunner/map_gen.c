@@ -1,5 +1,5 @@
 #include <libdragon.h>
-#include "maze.h"
+#include "map_gen.h"
 
  /*************************************************************
  * removeDirection()
