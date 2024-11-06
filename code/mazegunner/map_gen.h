@@ -2,10 +2,10 @@
 #define MAP_SIZE 10
 
 /* ------------------- TYPE DEFINITIONS -------------------- */
-typedef struct node_t
+typedef struct MapNode_t
 {
     uint8_t walls[4];
-} node;
+} MapNode;
 
 /* ----------------- FUNCTION DEFINITIONS ------------------ */
 
@@ -19,7 +19,7 @@ typedef struct node_t
  * @param pruneFactor how strongly to prune the map [0,99]
  * 
  *************************************************************/
-void generateMap(node **map, uint8_t pruneFactor);
+void generateMap(MapNode **map, uint8_t pruneFactor);
 
 /**************************************************************
  * freeMap()
@@ -30,7 +30,7 @@ void generateMap(node **map, uint8_t pruneFactor);
  * @param map the game map to free
  * 
  *************************************************************/
-void freeMap(node** map);
+void freeMap(MapNode** map);
 
 /**************************************************************
  * drawMap()
@@ -41,4 +41,4 @@ void freeMap(node** map);
  * @param map the game map
  * 
  *************************************************************/
-void drawMap(node **map);
+void drawMap(MapNode **map);

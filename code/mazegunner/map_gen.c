@@ -149,7 +149,7 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
  * @param map the game map
  * 
  *************************************************************/
-void drawMap(node **map)
+void drawMap(MapNode **map)
 {
     int size = (2 * MAP_SIZE) + 1;
     char disp[MAP_SIZE + 1][size];
@@ -212,7 +212,7 @@ void drawMap(node **map)
  * @param n the node to prune
  * 
  *************************************************************/
-void pruneNode(node* n)
+void pruneNode(MapNode* n)
 {
     int validWalls[4];
     int numOfValidWalls = 0;
@@ -243,7 +243,7 @@ void pruneNode(node* n)
  * @param pruneFactor how strongly to prune the map [0,99]
  * 
  *************************************************************/
-void generateMap(node **map, uint8_t pruneFactor)
+void generateMap(MapNode **map, uint8_t pruneFactor)
 {   
     /* keep a list of whether each node has been visited */
     /* 0 - not visited                                   */
@@ -278,7 +278,7 @@ void generateMap(node **map, uint8_t pruneFactor)
     
     
     /* convert connected maze to a map of nodes */
-    node n;
+    MapNode n;
     for (int row = 0; row < MAP_SIZE; row++)
     {
         for (int col = 0; col < MAP_SIZE; col++)
@@ -380,7 +380,7 @@ void generateMap(node **map, uint8_t pruneFactor)
  * @param map the game map to free
  * 
  *************************************************************/
-void freeMap(node** map)
+void freeMap(MapNode** map)
 {
     for (int i = 0; i < MAP_SIZE; i++) {
         free_uncached(map[i]);
