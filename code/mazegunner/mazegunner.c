@@ -14,7 +14,7 @@ const MinigameDef minigame_def = {
     .instructions = "A to shoot. Stick to move."
 };
 
-MapNode** GameMap;
+MapNode_t** GameMap;
 
 /*==============================
     minigame_init
@@ -32,9 +32,9 @@ void minigame_init()
     
     //viewport = t3d_viewport_create();
 
-    GameMap = malloc_uncached(MAP_SIZE * sizeof(MapNode*));
+    GameMap = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     for (int i = 0; i < MAP_SIZE; i++) {
-        GameMap[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode*));
+        GameMap[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     }
     console_init();
     printf("Press A to draw new maze\n\n");
