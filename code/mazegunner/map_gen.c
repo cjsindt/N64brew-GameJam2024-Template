@@ -2,7 +2,7 @@
 #include "map_gen.h"
 
  /*************************************************************
- * removeDirection()
+ * remove_direction()
  *
  * Description: Given a list of directions and a direction to
  *              remove, remove it.
@@ -13,7 +13,7 @@
  * @param numNeighbors the size of neighbors
  * 
  *************************************************************/
-void removeDirection(uint8_t *dirs, uint8_t* numDirs, uint8_t dirToRemove)
+void remove_direction(uint8_t *dirs, uint8_t* numDirs, uint8_t dirToRemove)
 {
     for (int i = 0; i < *numDirs; i++){
         if (dirs[i] == dirToRemove)
@@ -26,7 +26,7 @@ void removeDirection(uint8_t *dirs, uint8_t* numDirs, uint8_t dirToRemove)
 
 
 /**************************************************************
- * addNeighbor()
+ * add_neighbor()
  *
  * Description: Add currently visited node's neighbors to the
  *              neighbors list.
@@ -37,7 +37,7 @@ void removeDirection(uint8_t *dirs, uint8_t* numDirs, uint8_t dirToRemove)
  * @param numNeighbors the size of neighbors
  * 
  *************************************************************/
-void addNeighbor(int neighborToAdd, int* neighbors, int* numNeighbors)
+void add_neighbor(int neighborToAdd, int* neighbors, int* numNeighbors)
 {
     for (int i = 0; i < *numNeighbors; i++)
     {
@@ -51,7 +51,7 @@ void addNeighbor(int neighborToAdd, int* neighbors, int* numNeighbors)
 
 
 /**************************************************************
- * processNode()
+ * process_node()
  *
  * Description: Given a node being visited, add its
  *              non-visited neighbors to the neighbors list.
@@ -66,7 +66,7 @@ void addNeighbor(int neighborToAdd, int* neighbors, int* numNeighbors)
  * @return the direction chosen by visitedNode
  * 
  *************************************************************/
-uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numNeighbors)
+uint8_t process_node(int visitedNode, uint8_t* visited, int* neighbors, int* numNeighbors)
 {
     uint8_t numDirs = 4;
     uint8_t dirs[4] = {1, 2, 3, 4};
@@ -77,13 +77,13 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
     {
         if (visited[visitedNode - MAP_SIZE] == 0)
         {
-             addNeighbor(visitedNode - MAP_SIZE, neighbors, numNeighbors);
-             removeDirection(dirs, &numDirs, 1);
+             add_neighbor(visitedNode - MAP_SIZE, neighbors, numNeighbors);
+             remove_direction(dirs, &numDirs, 1);
         }
     }
     else
     {
-        removeDirection(dirs, &numDirs, 1);
+        remove_direction(dirs, &numDirs, 1);
     }
 
     /* if right node exists and has not been visited, add it to neighbors                 */
@@ -92,13 +92,13 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
     {
         if (visited[visitedNode + 1] == 0)
         {
-            addNeighbor(visitedNode + 1, neighbors, numNeighbors);
-            removeDirection(dirs, &numDirs, 2);
+            add_neighbor(visitedNode + 1, neighbors, numNeighbors);
+            remove_direction(dirs, &numDirs, 2);
         }
     }
     else
     {
-        removeDirection(dirs, &numDirs, 2);
+        remove_direction(dirs, &numDirs, 2);
     }
 
     /* if below node exists and has not been visited, add it to neighbors                 */
@@ -107,13 +107,13 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
     {
         if (visited[visitedNode + MAP_SIZE] == 0)
         {
-            addNeighbor(visitedNode + MAP_SIZE, neighbors, numNeighbors);
-            removeDirection(dirs, &numDirs, 3);
+            add_neighbor(visitedNode + MAP_SIZE, neighbors, numNeighbors);
+            remove_direction(dirs, &numDirs, 3);
         }
     }
     else
     {
-        removeDirection(dirs, &numDirs, 3);
+        remove_direction(dirs, &numDirs, 3);
     }
 
     /* if left node exists and has not been visited, add it to neighbors                 */
@@ -122,13 +122,13 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
     {
         if (visited[visitedNode - 1] == 0)
         {
-            addNeighbor(visitedNode - 1, neighbors, numNeighbors);
-            removeDirection(dirs, &numDirs, 4);
+            add_neighbor(visitedNode - 1, neighbors, numNeighbors);
+            remove_direction(dirs, &numDirs, 4);
         }
     }
     else 
     {
-        removeDirection(dirs, &numDirs, 4);
+        remove_direction(dirs, &numDirs, 4);
     }
 
     if(numDirs)
@@ -141,7 +141,7 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
 
 
 /**************************************************************
- * drawMap()
+ * draw_map()
  *
  * Description: Given the map, draw it to the console.
  *  
@@ -149,7 +149,7 @@ uint8_t processNode(int visitedNode, uint8_t* visited, int* neighbors, int* numN
  * @param map the game map
  * 
  *************************************************************/
-void drawMap(MapNode_t **map)
+void draw_map(MapNode_t **map)
 {
     int size = (2 * MAP_SIZE) + 1;
     char disp[MAP_SIZE + 1][size];
@@ -204,7 +204,7 @@ void drawMap(MapNode_t **map)
 }
 
 /**************************************************************
- * pruneNode()
+ * prune_node()
  *
  * Description: Given a node, prune a random wall from it.
  *  
@@ -212,7 +212,7 @@ void drawMap(MapNode_t **map)
  * @param n the node to prune
  * 
  *************************************************************/
-void pruneNode(MapNode_t* n)
+void prune_node(MapNode_t* n)
 {
     int validWalls[4];
     int numOfValidWalls = 0;
@@ -234,7 +234,7 @@ void pruneNode(MapNode_t* n)
 }
 
 /**************************************************************
- * generateMap()
+ * generate_map()
  *
  * Description: Generate a new map.
  *  
@@ -243,7 +243,7 @@ void pruneNode(MapNode_t* n)
  * @param pruneFactor how strongly to prune the map [0,99]
  * 
  *************************************************************/
-void generateMap(MapNode_t **map, uint8_t pruneFactor)
+void generate_map(MapNode_t **map, uint8_t pruneFactor)
 {   
     /* keep a list of whether each node has been visited */
     /* 0 - not visited                                   */
@@ -259,7 +259,7 @@ void generateMap(MapNode_t **map, uint8_t pruneFactor)
     int source = rand() % (MAP_SIZE * MAP_SIZE);
     visited[source] = 1;
     
-    processNode(source, visited, neighbors, &numNeighbors);
+    process_node(source, visited, neighbors, &numNeighbors);
     
     /* store the maze for further processing */
     uint8_t maze[MAP_SIZE][MAP_SIZE];
@@ -273,7 +273,7 @@ void generateMap(MapNode_t **map, uint8_t pruneFactor)
         neighbors[n] = neighbors[--numNeighbors];
         visited[nodeToVisit] = 1;
         numVisited++;
-        maze[nodeToVisit / MAP_SIZE][nodeToVisit % MAP_SIZE] = processNode(nodeToVisit, visited, neighbors, &numNeighbors);
+        maze[nodeToVisit / MAP_SIZE][nodeToVisit % MAP_SIZE] = process_node(nodeToVisit, visited, neighbors, &numNeighbors);
     }
     
     
@@ -317,7 +317,7 @@ void generateMap(MapNode_t **map, uint8_t pruneFactor)
             /* randomly determine if node will be pruned */
             if ((rand() % 100) < pruneFactor)
             {
-                pruneNode(&map[row][col]);
+                prune_node(&map[row][col]);
             }
         }
     }
@@ -372,7 +372,7 @@ void generateMap(MapNode_t **map, uint8_t pruneFactor)
 }
 
 /**************************************************************
- * freeMap()
+ * free_map()
  *
  * Description: Free the memory used by the game map
  *  
@@ -380,7 +380,7 @@ void generateMap(MapNode_t **map, uint8_t pruneFactor)
  * @param map the game map to free
  * 
  *************************************************************/
-void freeMap(MapNode_t** map)
+void free_map(MapNode_t** map)
 {
     for (int i = 0; i < MAP_SIZE; i++) {
         free_uncached(map[i]);

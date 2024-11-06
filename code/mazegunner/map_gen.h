@@ -1,3 +1,6 @@
+#ifndef __MAP_GEN_H__
+#define __MAP_GEN_H__
+
 /* ------------------------ MACROS ------------------------- */
 #define MAP_SIZE 10
 
@@ -10,7 +13,7 @@ typedef struct MapNode
 /* ----------------- FUNCTION DEFINITIONS ------------------ */
 
 /**************************************************************
- * generateMap()
+ * generate_map()
  *
  * Description: Generate a new map.
  *  
@@ -19,10 +22,10 @@ typedef struct MapNode
  * @param pruneFactor how strongly to prune the map [0,99]
  * 
  *************************************************************/
-void generateMap(MapNode_t **map, uint8_t pruneFactor);
+void generate_map(MapNode_t **map, uint8_t pruneFactor);
 
 /**************************************************************
- * freeMap()
+ * free_map()
  *
  * Description: Free the memory used by the game map
  *  
@@ -30,10 +33,10 @@ void generateMap(MapNode_t **map, uint8_t pruneFactor);
  * @param map the game map to free
  * 
  *************************************************************/
-void freeMap(MapNode_t** map);
+void free_map(MapNode_t** map);
 
 /**************************************************************
- * drawMap()
+ * draw_map()
  *
  * Description: Given the map, draw it to the console.
  *  
@@ -41,4 +44,17 @@ void freeMap(MapNode_t** map);
  * @param map the game map
  * 
  *************************************************************/
-void drawMap(MapNode_t **map);
+void draw_map(MapNode_t **map);
+
+/**************************************************************
+ * gamemap_init()
+ *
+ * Description: Initialize game map
+ *  
+ *
+ * @param map where to store the game map
+ * 
+ *************************************************************/
+void gamemap_init(MapNode_t **map);
+
+#endif
