@@ -5,7 +5,7 @@
 #include <libdragon.h>
 #include "../../core.h"
 #include "../../minigame.h"
-#include "maze.h"
+#include "map_gen.h"
 
 const MinigameDef minigame_def = {
     .gamename = "Maze Gunner",
@@ -14,7 +14,7 @@ const MinigameDef minigame_def = {
     .instructions = "A to shoot. Stick to move."
 };
 
-node** GameMap;
+MapNode_t** gameMap;
 
 /*==============================
     minigame_init
@@ -22,14 +22,24 @@ node** GameMap;
 ==============================*/
 void minigame_init()
 {
-    GameMap = malloc_uncached(MAP_SIZE * sizeof(node*));
+    // display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE_ANTIALIAS);
+    // depthBuffer = display_get_zbuf();
+
+    // t3d_init((T3DInitParams){});
+
+    // T3DMat4 modelMat; // matrix for our model, this is a "normal" float matrix
+    // t3d_mat4_identity(&modelMat);
+    
+    // viewport = t3d_viewport_create();
+
+    gameMap = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     for (int i = 0; i < MAP_SIZE; i++) {
-        GameMap[i] = malloc_uncached(MAP_SIZE * sizeof(node*));
+        gameMap[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     }
     console_init();
     printf("Press A to draw new maze\n\n");
-    generateMap(GameMap, 60);
-    drawMap(GameMap);
+    generate_map(gameMap, 60);
+    draw_map(gameMap);
     printf("\nPress B to go back to menu\n");
 }
 
@@ -60,8 +70,8 @@ void minigame_loop(float deltatime)
         {
             console_clear();
             printf("Press A to draw new maze\n\n");
-            generateMap(GameMap, 60);
-            drawMap(GameMap);
+            generate_map(gameMap, 60);
+            draw_map(gameMap);
             printf("\nPress B to go back to menu\n");
         }
 
@@ -78,7 +88,7 @@ void minigame_loop(float deltatime)
 ==============================*/
 void minigame_cleanup()
 {
-    freeMap(GameMap);
+    free_map(gameMap);
     console_clear();
     console_close();
 }
