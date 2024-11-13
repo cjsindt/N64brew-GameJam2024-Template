@@ -68,6 +68,15 @@ void player_init(player_data *player, color_t color, T3DVec3 position, float rot
   player->isAlive = true;
   player->ai_target = rand() % MAXPLAYERS;
   player->ai_reactionspeed = (2 - core_get_aidifficulty()) * 5 + rand() % ((3 - core_get_aidifficulty()) * 3);
+    //GameMap = malloc_uncached(MAP_SIZE * sizeof(node*));
+    //for (int i = 0; i < MAP_SIZE; i++) {
+    //    GameMap[i] = malloc_uncached(MAP_SIZE * sizeof(node*));
+    //}
+    //console_init();
+    //printf("Press A to draw new maze\n\n");
+    //generateMap(GameMap, 60);
+    //drawMap(GameMap);
+    //printf("\nPress B to go back to menu\n");
 }
 
 void minigame_init(void)
@@ -314,4 +323,7 @@ void minigame_cleanup(void)
   t3d_destroy();
 
   display_close();
+    //freeMap(GameMap);
+    //console_clear();
+    //console_close();
 }

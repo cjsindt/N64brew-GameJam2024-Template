@@ -1,9 +1,44 @@
-#define MAZE_SIZE 10
+/* ------------------------ MACROS ------------------------- */
+#define MAP_SIZE 10
 
-// Generate a MAZE_SIZE x MAZE_SIZE connected maze
-void generateMaze(uint8_t **maze);
+/* ------------------- TYPE DEFINITIONS -------------------- */
+typedef struct node_t
+{
+    uint8_t walls[4];
+} node;
 
-void freeMaze(uint8_t** edges);
+/* ----------------- FUNCTION DEFINITIONS ------------------ */
 
-// Draw a given maze from generateMaze()
-void drawMaze(uint8_t** edges);
+/**************************************************************
+ * generateMap()
+ *
+ * Description: Generate a new map.
+ *  
+ *
+ * @param map where to store the game map
+ * @param pruneFactor how strongly to prune the map [0,99]
+ * 
+ *************************************************************/
+void generateMap(node **map, uint8_t pruneFactor);
+
+/**************************************************************
+ * freeMap()
+ *
+ * Description: Free the memory used by the game map
+ *  
+ *
+ * @param map the game map to free
+ * 
+ *************************************************************/
+void freeMap(node** map);
+
+/**************************************************************
+ * drawMap()
+ *
+ * Description: Given the map, draw it to the console.
+ *  
+ *
+ * @param map the game map
+ * 
+ *************************************************************/
+void drawMap(node **map);
