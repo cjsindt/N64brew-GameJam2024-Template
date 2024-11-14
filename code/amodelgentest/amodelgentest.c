@@ -10,16 +10,16 @@
 
 surface_t *depthBuffer;
 T3DMat4 modelMat; // matrix for our model, this is a "normal" float matrix
-T3DMat4 floorMat;
+//T3DMat4 floorMat;
 T3DMat4FP *modelMatFP;
-T3DMat4FP *floorMatFP;
+//T3DMat4FP *floorMatFP;
 rspq_block_t *dplDraw;
-rspq_block_t *dplFloor;
+//rspq_block_t *dplFloor;
 T3DViewport viewport;
 float rotAngle;
 T3DVec3 *rotAxis;
 T3DVertPacked *wallVertices;
-T3DVertPacked *floorVertices;
+//T3DVertPacked *floorVertices;
 uint8_t colorAmbient[4] = {50, 50, 50, 0xFF};
 uint8_t colorDir[4] = {0xFF, 0xFF, 0xFF, 0xFF};
 T3DVec3 lightDirVec = {{0.0f, 0.0f, 1.0f}};
@@ -40,17 +40,17 @@ void minigame_init(void)
     t3d_init((T3DInitParams){});
     
     t3d_mat4_identity(&modelMat);
-    t3d_mat4_identity(&floorMat);
+    //t3d_mat4_identity(&floorMat);
     // Now allocate a fixed-point matrix, this is what t3d uses internally.
     modelMatFP = malloc_uncached(sizeof(T3DMat4FP));
-    floorMatFP = malloc_uncached(sizeof(T3DMat4FP));
+    //floorMatFP = malloc_uncached(sizeof(T3DMat4FP));
 
     t3d_vec3_norm(&lightDirVec);
 
     // Allocate vertices (make sure to have an uncached pointer before passing it to the API!)
     // For performance reasons, 'T3DVertPacked' contains two vertices at once in one struct.
     wallVertices = malloc_uncached(sizeof(T3DVertPacked) * 4);
-    floorVertices = malloc_uncached(sizeof(T3DVertPacked) * 2);
+    //floorVertices = malloc_uncached(sizeof(T3DVertPacked) * 2);
 
     uint32_t wall_color = 0xAAAA88FF;
     uint16_t norm = t3d_vert_pack_normal(&(T3DVec3){{0, 0, 1}}); // normals are packed in a 5.6.5 format
@@ -86,22 +86,22 @@ void minigame_init(void)
         .rgbaB = wall_color,
         .normB = norm,
     };
-    floorVertices[0] = (T3DVertPacked) {
-        .posA = {-100, 0, -100},
-        .rgbaA = 0x555555FF,
-        .normA = norm,
-        .posB = {100, 0, -100},
-        .rgbaB = 0x555555FF,
-        .normB = norm
-    };
-    floorVertices[1] = (T3DVertPacked) {
-        .posA = {-100, 0, 100},
-        .rgbaA = 0x555555FF,
-        .normA = norm,
-        .posB = {100, 0, 100},
-        .rgbaB = 0x555555FF,
-        .normB = norm
-    };
+    // floorVertices[0] = (T3DVertPacked) {
+    //     .posA = {-100, 0, -100},
+    //     .rgbaA = 0x555555FF,
+    //     .normA = norm,
+    //     .posB = {100, 0, -100},
+    //     .rgbaB = 0x555555FF,
+    //     .normB = norm
+    // };
+    // floorVertices[1] = (T3DVertPacked) {
+    //     .posA = {-100, 0, 100},
+    //     .rgbaA = 0x555555FF,
+    //     .normA = norm,
+    //     .posB = {100, 0, 100},
+    //     .rgbaB = 0x555555FF,
+    //     .normB = norm
+    // };
 
     rotAngle = 0.0f;
     T3DVec3 rotAxisVal = {{-1.0f, 2.5f, 0.25f}};
@@ -135,9 +135,9 @@ void minigame_loop(float deltaTime)
     t3d_mat4_to_fixed(modelMatFP, &modelMat);
 
     // Initialize the floor's model matrix
-    t3d_mat4_identity(&floorMat);
-    t3d_mat4_translate(&floorMat, 0.0f, -1.0f, 0.0f); // Move the floor into place
-    t3d_mat4_to_fixed(floorMatFP, &floorMat);          // Update floorMatFP with the new floor matrix
+    //t3d_mat4_identity(&floorMat);
+    //t3d_mat4_translate(&floorMat, 0.0f, -1.0f, 0.0f); // Move the floor into place
+    //t3d_mat4_to_fixed(floorMatFP, &floorMat);          // Update floorMatFP with the new floor matrix
 
     // ======== Draw (3D) ======== //
     rdpq_attach(display_get(), display_get_zbuf()); // set the target to draw to
@@ -184,21 +184,21 @@ void minigame_loop(float deltaTime)
 
     rspq_block_run(dplDraw);
 
-    if (!dplFloor) {
-        rspq_block_begin();
-        t3d_matrix_push(floorMatFP);
-        t3d_vert_load(floorVertices, 0, 4);
-        t3d_matrix_pop(1);
+    // if (!dplFloor) {
+    //     rspq_block_begin();
+    //     t3d_matrix_push(floorMatFP);
+    //     t3d_vert_load(floorVertices, 0, 4);
+    //     t3d_matrix_pop(1);
 
-        t3d_tri_draw(0,1,2); t3d_tri_draw(0,2,3);
+    //     t3d_tri_draw(0,1,2); t3d_tri_draw(0,2,3);
 
-        t3d_tri_sync();
+    //     t3d_tri_sync();
 
-        dplFloor = rspq_block_end();
+    //     dplFloor = rspq_block_end();
         
-    }
+    // }
 
-    rspq_block_run(dplFloor);
+    // rspq_block_run(dplFloor);
 
     rdpq_detach_show();
 }
