@@ -68,15 +68,15 @@ void player_init(player_data *player, color_t color, T3DVec3 position, float rot
   player->isAlive = true;
   player->ai_target = rand() % MAXPLAYERS;
   player->ai_reactionspeed = (2 - core_get_aidifficulty()) * 5 + rand() % ((3 - core_get_aidifficulty()) * 3);
-    //GameMap = malloc_uncached(MAP_SIZE * sizeof(node*));
-    //for (int i = 0; i < MAP_SIZE; i++) {
-    //    GameMap[i] = malloc_uncached(MAP_SIZE * sizeof(node*));
-    //}
-    //console_init();
-    //printf("Press A to draw new maze\n\n");
-    //generateMap(GameMap, 60);
-    //drawMap(GameMap);
-    //printf("\nPress B to go back to menu\n");
+  // GameMap = malloc_uncached(MAP_SIZE * sizeof(node*));
+  // for (int i = 0; i < MAP_SIZE; i++) {
+  //     GameMap[i] = malloc_uncached(MAP_SIZE * sizeof(node*));
+  // }
+  // console_init();
+  // printf("Press A to draw new maze\n\n");
+  // generateMap(GameMap, 60);
+  // drawMap(GameMap);
+  // printf("\nPress B to go back to menu\n");
 }
 
 void minigame_init(void)
@@ -138,11 +138,10 @@ void minigame_init(void)
   };
 
   float start_rotations[] = {
-    M_PI/2,
-    0,
-    3*M_PI/2,
-    M_PI
-  };
+      M_PI / 2,
+      0,
+      3 * M_PI / 2,
+      M_PI};
 
   for (size_t i = 0; i < MAXPLAYERS; i++)
   {
@@ -269,7 +268,7 @@ void minigame_loop(float deltaTime)
     // t3d_light_set_directional(0, colorDir, &lightDirVec);
     // t3d_matrix_push_pos(1);
 
-    for (int p=0; p<MAXPLAYERS; p++)
+    for (int p = 0; p < MAXPLAYERS; p++)
     {
       // if(p == v)continue;
       // t3d_matrix_set(players[p].modelMatFP, true);
@@ -292,8 +291,8 @@ void minigame_loop(float deltaTime)
   rdpq_sync_pipe(); // Hardware crashes otherwise
 
   // draw thick lines between the screens
-	rdpq_fill_rectangle(0, sizeY / 2 - 1, sizeX, sizeY / 2 + 1); // horizontal line
-	rdpq_fill_rectangle(sizeX / 2 - 1, 0, sizeX / 2 + 1, sizeY); // vertical line
+  rdpq_fill_rectangle(0, sizeY / 2 - 1, sizeX, sizeY / 2 + 1); // horizontal line
+  rdpq_fill_rectangle(sizeX / 2 - 1, 0, sizeX / 2 + 1, sizeY); // vertical line
 
   rdpq_detach_show();
 }
@@ -315,7 +314,6 @@ void minigame_cleanup(void)
 
   rspq_block_free(dplMap);
 
-  
   t3d_model_free(modelMap);
 
   free_uncached(mapMatFP);
@@ -323,7 +321,7 @@ void minigame_cleanup(void)
   t3d_destroy();
 
   display_close();
-    //freeMap(GameMap);
-    //console_clear();
-    //console_close();
+  // freeMap(GameMap);
+  // console_clear();
+  // console_close();
 }
