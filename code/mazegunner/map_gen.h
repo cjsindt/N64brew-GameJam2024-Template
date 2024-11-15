@@ -55,6 +55,6 @@ void draw_map(MapNode_t **map);
  * @param map where to store the game map
  * 
  *************************************************************/
-void gamemap_init(MapNode_t **map);
+void map_init(MapNode_t **map);
 
 #endif
