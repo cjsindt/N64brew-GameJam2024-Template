@@ -371,6 +371,15 @@ void generate_map(MapNode_t **map, uint8_t pruneFactor)
     map[val + 1][MAP_SIZE - 2].walls[1] = 0;
 }
 
+void map_init(MapNode_t **map)
+{
+    map = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
+    for (int i = 0; i < MAP_SIZE; i++) {
+        map[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
+    }
+    generate_map(map, 60);
+}
+
 /**************************************************************
  * free_map()
  *
