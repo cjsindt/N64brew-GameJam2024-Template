@@ -14,7 +14,7 @@ const MinigameDef minigame_def = {
     .instructions = "A to shoot. Stick to move."
 };
 
-Map_T *GameMap;
+Map_T *gameMap;
 
 /*==============================
     minigame_init
@@ -91,7 +91,7 @@ void minigame_loop(float deltatime)
 ==============================*/
 void minigame_cleanup()
 {
-    free_map(gameMap);
+    destroy_map(gameMap);
     console_clear();
     console_close();
 }

@@ -2,6 +2,22 @@
 #include "map.h"
 
 
+/**************************************************************
+ * map_init()
+ *
+ * Description: Initialize game map
+ *  
+ *
+ * @param map where to store the game map
+ * 
+ *************************************************************/
+void map_init(Map_T *map)
+{
+    t3d_mat4_identity(&(map->floorMat));
+    t3d_mat4_identity(&(map->modelMat));
+}
+
+
  /*************************************************************
  * remove_direction()
  *
@@ -353,15 +369,15 @@ void generate_map(Map_T *map, uint8_t pruneFactor)
 
 
 /**************************************************************
- * free_map()
+ * destroy_map()
  *
  * Description: Free the memory used by the game map
  *  
  *
- * @param map the game map to free
+ * @param map the game map to destroy
  * 
  *************************************************************/
-void free_map(Map_T *map)
+void destroy_map(Map_T *map)
 {
     free_uncached(map);
     map = NULL;
