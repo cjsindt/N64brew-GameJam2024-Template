@@ -14,7 +14,7 @@ const MinigameDef minigame_def = {
     .instructions = "A to shoot. Stick to move."
 };
 
-Map_T *gameMap;
+Map_T *GameMap;
 
 /*==============================
     minigame_init

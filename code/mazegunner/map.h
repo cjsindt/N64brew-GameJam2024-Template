@@ -7,8 +7,12 @@
 /* ------------------- TYPE DEFINITIONS -------------------- */
 typedef struct Map
 {   
+    /* walls */
     uint8_t horizontal[MAP_SIZE - 1][MAP_SIZE];
     uint8_t vertical[MAP_SIZE][MAP_SIZE - 1];
+
+    /* T3D */
+
 } Map_T;
 
 /* ----------------- FUNCTION DEFINITIONS ------------------ */
