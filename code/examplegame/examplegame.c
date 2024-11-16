@@ -36,7 +36,7 @@ the game jam.
 // You need this function defined somewhere in your project
 // so that the minigame manager can work
 const MinigameDef minigame_def = {
-    .gamename = "Example Game",
+    .gamename = "zExample Game",
     .developername = "Your Name",
     .description = "This is an example game.",
     .instructions = "Mash A to win."

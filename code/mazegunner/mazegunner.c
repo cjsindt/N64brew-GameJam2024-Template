@@ -42,6 +42,7 @@ void minigame_init()
     printf("Press A to draw new maze\n\n");
     generate_map(gameMap, 60);
     draw_map(gameMap);
+    printf("\nTotal Walls: %d\n", total_walls(gameMap));
     printf("\nPress B to go back to menu\n");
 }
 
@@ -74,6 +75,7 @@ void minigame_loop(float deltatime)
             printf("Press A to draw new maze\n\n");
             generate_map(gameMap, 60);
             draw_map(gameMap);
+            printf("\nTotal Walls: %d\n", total_walls(gameMap));
             printf("\nPress B to go back to menu\n");
         }
 
