@@ -14,7 +14,7 @@ const MinigameDef minigame_def = {
     .instructions = "A to shoot. Stick to move."
 };
 
-MapNode_t** gameMap;
+Map_T *gameMap;
 
 /*==============================
     minigame_init
@@ -33,6 +33,7 @@ void minigame_init()
     // viewport = t3d_viewport_create();
 
     console_init();
+    gameMap = malloc_uncached(sizeof(Map_T*));
     map_init(gameMap);
     // gameMap = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     // for (int i = 0; i < MAP_SIZE; i++) {

@@ -8,7 +8,12 @@
 typedef struct MapNode
 {
     uint8_t walls[4];
-} MapNode_t;
+} MapNode_T;
+
+typedef struct Map
+{   
+    MapNode_T **nodes;
+} Map_T;
 
 /* ----------------- FUNCTION DEFINITIONS ------------------ */
 
@@ -22,7 +27,7 @@ typedef struct MapNode
  * @param pruneFactor how strongly to prune the map [0,99]
  * 
  *************************************************************/
-void generate_map(MapNode_t **map, uint8_t pruneFactor);
+void generate_map(Map_T *map, uint8_t pruneFactor);
 
 /**************************************************************
  * free_map()
@@ -33,7 +38,7 @@ void generate_map(MapNode_t **map, uint8_t pruneFactor);
  * @param map the game map to free
  * 
  *************************************************************/
-void free_map(MapNode_t** map);
+void free_map(Map_T *map);
 
 /**************************************************************
  * draw_map()
@@ -44,7 +49,7 @@ void free_map(MapNode_t** map);
  * @param map the game map
  * 
  *************************************************************/
-void draw_map(MapNode_t **map);
+void draw_map(Map_T *map);
 
 /**************************************************************
  * gamemap_init()
@@ -55,7 +60,7 @@ void draw_map(MapNode_t **map);
  * @param map where to store the game map
  * 
  *************************************************************/
-void map_init(MapNode_t **map);
+void map_init(Map_T *map);
 
 /**************************************************************
  * total_walls()
@@ -66,6 +71,6 @@ void map_init(MapNode_t **map);
  * @param map the game map to count walls of
  * 
  *************************************************************/
-int total_walls(MapNode_t **map);
+int total_walls(Map_T *map);
 
 #endif

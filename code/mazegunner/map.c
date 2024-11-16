@@ -149,7 +149,7 @@ uint8_t process_node(int visitedNode, uint8_t* visited, int* neighbors, int* num
  * @param map the game map
  * 
  *************************************************************/
-void draw_map(MapNode_t **map)
+void draw_map(Map_T *map)
 {
     int size = (2 * MAP_SIZE) + 1;
     char disp[MAP_SIZE + 1][size];
@@ -185,10 +185,10 @@ void draw_map(MapNode_t **map)
     {   
         for (int col = 1; col < size - 1; col+=2)
         {
-            disp[row-1][col] = map[row-1][((col+1)/2)-1].walls[0] ? '_' : ' ';
-            disp[row][col+1] = map[row-1][((col+1)/2)-1].walls[1] ? '|' : ' ';
-            disp[row][col] = map[row-1][((col+1)/2)-1].walls[2] ? '_' : ' ';
-            disp[row][col-1] = map[row-1][((col+1)/2)-1].walls[3] ? '|' : ' ';
+            disp[row-1][col] = map->nodes[row-1][((col+1)/2)-1].walls[0] ? '_' : ' ';
+            disp[row][col+1] = map->nodes[row-1][((col+1)/2)-1].walls[1] ? '|' : ' ';
+            disp[row][col] = map->nodes[row-1][((col+1)/2)-1].walls[2] ? '_' : ' ';
+            disp[row][col-1] = map->nodes[row-1][((col+1)/2)-1].walls[3] ? '|' : ' ';
         }
     }
     
@@ -212,7 +212,7 @@ void draw_map(MapNode_t **map)
  * @param n the node to prune
  * 
  *************************************************************/
-void prune_node(MapNode_t* n)
+void prune_node(MapNode_T *n)
 {
     int validWalls[4];
     int numOfValidWalls = 0;
@@ -243,7 +243,7 @@ void prune_node(MapNode_t* n)
  * @param pruneFactor how strongly to prune the map [0,99]
  * 
  *************************************************************/
-void generate_map(MapNode_t **map, uint8_t pruneFactor)
+void generate_map(Map_T *map, uint8_t pruneFactor)
 {   
     /* keep a list of whether each node has been visited */
     /* 0 - not visited                                   */
@@ -278,7 +278,7 @@ void generate_map(MapNode_t **map, uint8_t pruneFactor)
     
     
     /* convert connected maze to a map of nodes */
-    MapNode_t n;
+    MapNode_T n;
     for (int row = 0; row < MAP_SIZE; row++)
     {
         for (int col = 0; col < MAP_SIZE; col++)
@@ -301,7 +301,7 @@ void generate_map(MapNode_t **map, uint8_t pruneFactor)
             n.walls[2] = n.walls[2] ? ((row != (MAP_SIZE - 1)) && (maze[row+1][col] == 1) ? 0 : 1) : 0;
             n.walls[3] = n.walls[3] ? ((col != 0) && (maze[row][col-1] == 2) ? 0 : 1) : 0;
             
-            map[row][col] = n;
+            map->nodes[row][col] = n;
         }
     }
     
@@ -317,7 +317,7 @@ void generate_map(MapNode_t **map, uint8_t pruneFactor)
             /* randomly determine if node will be pruned */
             if ((rand() % 100) < pruneFactor)
             {
-                prune_node(&map[row][col]);
+                prune_node(&map->nodes[row][col]);
             }
         }
     }
@@ -328,47 +328,47 @@ void generate_map(MapNode_t **map, uint8_t pruneFactor)
 
     /* top wall */
     uint8_t val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
-    map[0][val].walls[1] = 1;
-    map[0][val].walls[2] = 0;
-    map[0][val + 1].walls[3] = 1;
-    map[0][val + 1].walls[2] = 0;
-    map[1][val].walls[0] = 0;
-    map[1][val].walls[1] = 0;
-    map[1][val + 1].walls[0] = 0;
-    map[1][val + 1].walls[3] = 0;
+    map->nodes[0][val].walls[1] = 1;
+    map->nodes[0][val].walls[2] = 0;
+    map->nodes[0][val + 1].walls[3] = 1;
+    map->nodes[0][val + 1].walls[2] = 0;
+    map->nodes[1][val].walls[0] = 0;
+    map->nodes[1][val].walls[1] = 0;
+    map->nodes[1][val + 1].walls[0] = 0;
+    map->nodes[1][val + 1].walls[3] = 0;
 
     /* bottom wall */
     val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
-    map[MAP_SIZE - 1][val].walls[1] = 1;
-    map[MAP_SIZE - 1][val].walls[0] = 0;
-    map[MAP_SIZE - 1][val + 1].walls[3] = 1;
-    map[MAP_SIZE - 1][val + 1].walls[0] = 0;
-    map[MAP_SIZE - 2][val].walls[2] = 0;
-    map[MAP_SIZE - 2][val].walls[1] = 0;
-    map[MAP_SIZE - 2][val + 1].walls[2] = 0;
-    map[MAP_SIZE - 2][val + 1].walls[3] = 0;
+    map->nodes[MAP_SIZE - 1][val].walls[1] = 1;
+    map->nodes[MAP_SIZE - 1][val].walls[0] = 0;
+    map->nodes[MAP_SIZE - 1][val + 1].walls[3] = 1;
+    map->nodes[MAP_SIZE - 1][val + 1].walls[0] = 0;
+    map->nodes[MAP_SIZE - 2][val].walls[2] = 0;
+    map->nodes[MAP_SIZE - 2][val].walls[1] = 0;
+    map->nodes[MAP_SIZE - 2][val + 1].walls[2] = 0;
+    map->nodes[MAP_SIZE - 2][val + 1].walls[3] = 0;
 
     /* left wall */
     val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
-    map[val][0].walls[2] = 1;
-    map[val][0].walls[1] = 0;
-    map[val + 1][0].walls[0] = 1;
-    map[val + 1][0].walls[1] = 0;
-    map[val][1].walls[3] = 0;
-    map[val][1].walls[2] = 0;
-    map[val + 1][1].walls[0] = 0;
-    map[val + 1][1].walls[3] = 0;
+    map->nodes[val][0].walls[2] = 1;
+    map->nodes[val][0].walls[1] = 0;
+    map->nodes[val + 1][0].walls[0] = 1;
+    map->nodes[val + 1][0].walls[1] = 0;
+    map->nodes[val][1].walls[3] = 0;
+    map->nodes[val][1].walls[2] = 0;
+    map->nodes[val + 1][1].walls[0] = 0;
+    map->nodes[val + 1][1].walls[3] = 0;
 
     /* right wall */
     val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
-    map[val][MAP_SIZE - 1].walls[2] = 1;
-    map[val][MAP_SIZE - 1] .walls[3] = 0;
-    map[val + 1][MAP_SIZE - 1].walls[0] = 1;
-    map[val + 1][MAP_SIZE - 1].walls[3] = 0;
-    map[val][MAP_SIZE - 2].walls[1] = 0;
-    map[val][MAP_SIZE - 2].walls[2] = 0;
-    map[val + 1][MAP_SIZE - 2].walls[0] = 0;
-    map[val + 1][MAP_SIZE - 2].walls[1] = 0;
+    map->nodes[val][MAP_SIZE - 1].walls[2] = 1;
+    map->nodes[val][MAP_SIZE - 1] .walls[3] = 0;
+    map->nodes[val + 1][MAP_SIZE - 1].walls[0] = 1;
+    map->nodes[val + 1][MAP_SIZE - 1].walls[3] = 0;
+    map->nodes[val][MAP_SIZE - 2].walls[1] = 0;
+    map->nodes[val][MAP_SIZE - 2].walls[2] = 0;
+    map->nodes[val + 1][MAP_SIZE - 2].walls[0] = 0;
+    map->nodes[val + 1][MAP_SIZE - 2].walls[1] = 0;
 }
 
 /**************************************************************
@@ -380,11 +380,12 @@ void generate_map(MapNode_t **map, uint8_t pruneFactor)
  * @param map where to store the game map
  * 
  *************************************************************/
-void map_init(MapNode_t **map)
+void map_init(Map_T *map)
 {
-    map = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
-    for (int i = 0; i < MAP_SIZE; i++) {
-        map[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
+    map->nodes = malloc_uncached(MAP_SIZE * sizeof(MapNode_T *));
+    for (int i = 0; i < MAP_SIZE; i++)
+    {
+        map->nodes[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_T *));
     }
 }
 
@@ -397,14 +398,14 @@ void map_init(MapNode_t **map)
  * @param map the game map to free
  * 
  *************************************************************/
-void free_map(MapNode_t** map)
+void free_map(Map_T *map)
 {
     for (int i = 0; i < MAP_SIZE; i++) {
-        free_uncached(map[i]);
-        map[i] = NULL;
+        free_uncached(map->nodes[i]);
+        map->nodes[i] = NULL;
     }
+    free_uncached(map->nodes);
     free_uncached(map);
-    map = NULL;
 }
 
 /**************************************************************
@@ -416,7 +417,7 @@ void free_map(MapNode_t** map)
  * @param map the game map to count walls of
  * 
  *************************************************************/
-int total_walls(MapNode_t **map)
+int total_walls(Map_T *map)
 {
     return 0;
 }
