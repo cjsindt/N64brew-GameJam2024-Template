@@ -5,7 +5,7 @@
 #include <libdragon.h>
 #include "../../core.h"
 #include "../../minigame.h"
-#include "map_gen.h"
+#include "map.h"
 
 const MinigameDef minigame_def = {
     .gamename = "Maze Gunner",
@@ -33,11 +33,11 @@ void minigame_init()
     // viewport = t3d_viewport_create();
 
     console_init();
-    //map_init(gameMap);
-    gameMap = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
-    for (int i = 0; i < MAP_SIZE; i++) {
-        gameMap[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
-    }
+    map_init(gameMap);
+    // gameMap = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
+    // for (int i = 0; i < MAP_SIZE; i++) {
+    //     gameMap[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
+    // }
     printf("Press A to draw new maze\n\n");
     generate_map(gameMap, 60);
     draw_map(gameMap);

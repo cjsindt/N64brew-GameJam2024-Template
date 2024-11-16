@@ -57,4 +57,15 @@ void draw_map(MapNode_t **map);
  *************************************************************/
 void map_init(MapNode_t **map);
 
+/**************************************************************
+ * total_walls()
+ *
+ * Description: Calculates the total number of walls in a map
+ *  
+ *
+ * @param map the game map to count walls of
+ * 
+ *************************************************************/
+int total_walls(MapNode_t **map);
+
 #endif

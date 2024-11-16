@@ -1,5 +1,5 @@
 #include <libdragon.h>
-#include "map_gen.h"
+#include "map.h"
 
  /*************************************************************
  * remove_direction()
@@ -371,13 +371,21 @@ void generate_map(MapNode_t **map, uint8_t pruneFactor)
     map[val + 1][MAP_SIZE - 2].walls[1] = 0;
 }
 
+/**************************************************************
+ * gamemap_init()
+ *
+ * Description: Initialize game map
+ *  
+ *
+ * @param map where to store the game map
+ * 
+ *************************************************************/
 void map_init(MapNode_t **map)
 {
     map = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     for (int i = 0; i < MAP_SIZE; i++) {
         map[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     }
-    generate_map(map, 60);
 }
 
 /**************************************************************
@@ -397,4 +405,18 @@ void free_map(MapNode_t** map)
     }
     free_uncached(map);
     map = NULL;
+}
+
+/**************************************************************
+ * total_walls()
+ *
+ * Description: Calculates the total number of walls in a map
+ *  
+ *
+ * @param map the game map to count walls of
+ * 
+ *************************************************************/
+int total_walls(MapNode_t **map)
+{
+    return 0;
 }
