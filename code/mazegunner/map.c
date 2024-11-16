@@ -266,8 +266,6 @@ void generate_map(Map_T *map, uint8_t pruneFactor)
         maze[nodeToVisit / MAP_SIZE][nodeToVisit % MAP_SIZE] = process_node(nodeToVisit, visited, neighbors, &numNeighbors);
     }
     
-
-    
     /* convert connected maze to a map of nodes */
     for (int i = 0; i < MAP_SIZE; i++)
     {
@@ -325,47 +323,32 @@ void generate_map(Map_T *map, uint8_t pruneFactor)
     /* to keep from sealing off players, open the adjacent walls         */
 
     /* top wall */
-    uint8_t val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    uint8_t val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
     map->vertical[0][val] = 1;
     map->vertical[1][val] = 0;
     map->horizontal[0][val] = 0;
     map->horizontal[0][val-1] = 0;
 
     // /* bottom wall */
-    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
     map->vertical[MAP_SIZE-1][val] = 1;
     map->vertical[MAP_SIZE-2][val] = 0;
     map->horizontal[MAP_SIZE-2][val] = 0;
     map->horizontal[MAP_SIZE-2][val-1] = 0;
 
     // /* left wall */
-    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
     map->horizontal[val][0] = 1;
     map->horizontal[val][1] = 0;
     map->vertical[val][0] = 0;
     map->vertical[val+1][0] = 0;
 
     // /* right wall */
-    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
     map->horizontal[val][MAP_SIZE-1] = 1;
     map->horizontal[val][MAP_SIZE-2] = 0;
     map->vertical[val][MAP_SIZE-2] = 0;
     map->vertical[val+1][MAP_SIZE-2] = 0;
-}
-
-
-/**************************************************************
- * gamemap_init()
- *
- * Description: Initialize game map
- *  
- *
- * @param map where to store the game map
- * 
- *************************************************************/
-void map_init(Map_T *map)
-{
-    map = malloc_uncached(MAP_SIZE * sizeof(Map_T *));
 }
 
 
@@ -381,6 +364,7 @@ void map_init(Map_T *map)
 void free_map(Map_T *map)
 {
     free_uncached(map);
+    map = NULL;
 }
 
 
@@ -396,26 +380,13 @@ void free_map(Map_T *map)
 int total_walls(Map_T *map)
 {
     int total_walls = MAP_SIZE * 4;
-    //int visited[MAP_SIZE][MAP_SIZE] = {0};
 
-    for (int row = 0; row < MAP_SIZE; row++)
+    for (int i = 0; i < MAP_SIZE; i++)
     {
-        for (int col = 0; col < MAP_SIZE; col++)
+        for (int j = 0; j < MAP_SIZE - 1; j++)
         {
-            // total_walls += (row) ? (visited[row - 1][col]) ? 0 : map->nodes[row][col].walls[0] : 0;
-            // total_walls += map->nodes[row][col].walls[1];
-            // total_walls += map->nodes[row][col].walls[2];
-            // total_walls += (col) ? (visited[row][col - 1]) ? 0 : map->nodes[row][col].walls[3] : 0;
-
-            //total_walls += (col != (MAP_SIZE - 1)) ? map->nodes[row][col].walls[1] : 0;
-            //total_walls += (row != (MAP_SIZE - 1)) ? map->nodes[row][col].walls[2] : 0;
-
-            // map->nodes[row][col].walls[0] ? '_' : ' ';
-            // map->nodes[row][col].walls[1] ? '|' : ' ';
-            // map->nodes[row][col].walls[2] ? '_' : ' ';
-            // map->nodes[row][col].walls[3] ? '|' : ' ';
-
-            //visited[row][col] = 1;
+            total_walls += map->vertical[i][j];
+            total_walls += map->horizontal[j][i];
         }
     }
     return total_walls;

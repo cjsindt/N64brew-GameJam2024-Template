@@ -5,11 +5,6 @@
 #define MAP_SIZE 10
 
 /* ------------------- TYPE DEFINITIONS -------------------- */
-// typedef struct MapNode
-// {
-//     uint8_t walls[4];
-// } MapNode_T;
-
 typedef struct Map
 {   
     uint8_t horizontal[MAP_SIZE - 1][MAP_SIZE];

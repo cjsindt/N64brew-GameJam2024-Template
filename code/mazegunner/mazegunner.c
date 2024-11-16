@@ -34,13 +34,12 @@ void minigame_init()
 
     console_init();
     gameMap = malloc_uncached(sizeof(Map_T*));
-    map_init(gameMap);
     // gameMap = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     // for (int i = 0; i < MAP_SIZE; i++) {
     //     gameMap[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     // }
     printf("Press A to draw new maze\n\n");
-    generate_map(gameMap, 0);
+    generate_map(gameMap, 30);
     draw_map(gameMap);
     printf("\nTotal Walls: %d\n", total_walls(gameMap));
     printf("\nPress B to go back to menu\n");
@@ -73,7 +72,7 @@ void minigame_loop(float deltatime)
         {
             console_clear();
             printf("Press A to draw new maze\n\n");
-            generate_map(gameMap, 0);
+            generate_map(gameMap, 30);
             draw_map(gameMap);
             printf("\nTotal Walls: %d\n", total_walls(gameMap));
             printf("\nPress B to go back to menu\n");
