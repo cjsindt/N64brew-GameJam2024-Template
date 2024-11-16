@@ -224,37 +224,6 @@ void draw_map(Map_T *map)
 
 
 /**************************************************************
- * prune_node()
- *
- * Description: Given a node, prune a random wall from it.
- *  
- *
- * @param n the node to prune
- * 
- *************************************************************/
-// void prune_node(MapNode_T *n)
-// {
-//     int validWalls[4];
-//     int numOfValidWalls = 0;
-    
-//     /* list each valid wall */
-//     for (int i = 0; i < 4; i++)
-//     {
-//         if (n->walls[i])
-//         {
-//             validWalls[numOfValidWalls++] = i;
-//         }
-//     }
-    
-//     /* choose a random valid wall and remove it */
-//     if (numOfValidWalls)
-//     {
-//         n->walls[validWalls[rand() % numOfValidWalls]] = 0;
-//     }
-// }
-
-
-/**************************************************************
  * generate_map()
  *
  * Description: Generate a new map.
@@ -300,33 +269,6 @@ void generate_map(Map_T *map, uint8_t pruneFactor)
 
     
     /* convert connected maze to a map of nodes */
-    // MapNode_T n;
-    // for (int row = 0; row < MAP_SIZE; row++)
-    // {
-    //     for (int col = 0; col < MAP_SIZE; col++)
-    //     {
-    //         /* reset n */
-    //         for (int i = 0; i < 4; i++)
-    //         {
-    //             n.walls[i] = 1;
-    //         }
-
-    //         /* start by removing wall known to maze location */
-    //         if (maze[row][col])
-    //         {
-    //             n.walls[maze[row][col] - 1] = 0;
-    //         }
-            
-    //         /* find neighboring walls to remove */
-    //         n.walls[0] = n.walls[0] ? ((row != 0) && (maze[row-1][col] == 3) ? 0 : 1) : 0;
-    //         n.walls[1] = n.walls[1] ? ((col != (MAP_SIZE - 1)) && (maze[row][col+1] == 4) ? 0 : 1) : 0;
-    //         n.walls[2] = n.walls[2] ? ((row != (MAP_SIZE - 1)) && (maze[row+1][col] == 1) ? 0 : 1) : 0;
-    //         n.walls[3] = n.walls[3] ? ((col != 0) && (maze[row][col-1] == 2) ? 0 : 1) : 0;
-            
-    //         map->nodes[row][col] = n;
-    //     }
-    // }
-    
     for (int i = 0; i < MAP_SIZE; i++)
     {
         for (int j = 0; j < MAP_SIZE - 1; j++)
@@ -358,111 +300,57 @@ void generate_map(Map_T *map, uint8_t pruneFactor)
                     map->vertical[row][col - 1] = 0;
                     break;
             }
-
-            // if (maze[row][col] == 1 || maze[row][col] == 3)
-            // {
-            //     map->horizontal[row - 1][col] = 0;
-            // }
-
-            // if (maze[row][col] == 2 || maze[row][col] == 4)
-            // {
-            //     map->vertical[row][col - 1] = 0;
-            // }
         }
     }
     
-    for (int i = 0; i < MAP_SIZE; i++)
-    {
-        for (int j = 0; j < MAP_SIZE; j++)
-        {
-            printf("%d", maze[i][j]);
-        }
-        printf("\n");
-    }
-
-    printf("\n");
-
-    for (int i = 0; i < MAP_SIZE - 1; i++)
-    {
-        for (int j = 0; j < MAP_SIZE; j++)
-        {
-            printf("%d", map->horizontal[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
+    /* prune walls to open up map more */
     for (int i = 0; i < MAP_SIZE; i++)
     {
         for (int j = 0; j < MAP_SIZE - 1; j++)
-        {
-            printf("%d", map->vertical[i][j]);
+        {   
+            if (rand() % 100 < pruneFactor)
+            {
+                map->vertical[i][j] = 0;
+            }
+            if (rand() % 100 < pruneFactor)
+            {
+                map->horizontal[j][i] = 0;
+            }
         }
-        printf("\n");
     }
-    /* prune walls to open up map more                                             */
-    /* only prune nodes not on the edge of the maze to avoid:                      */
-    /*      1. array overflow/underflow                                            */
-    /*      2. potential line of sight to opponent at start of match               */
-    /*         (still possible by random chance, but less likely when not pruning) */
-    // for (int row = 1; row < MAP_SIZE - 1; row++)
-    // {
-    //     for (int col = 1; col < MAP_SIZE - 1; col++)
-    //     {
-    //         /* randomly determine if node will be pruned */
-    //         if ((rand() % 100) < pruneFactor)
-    //         {
-    //             prune_node(&map->nodes[row][col]);
-    //         }
-    //     }
-    // }
+
     
     /* remove line of sight from players on spawn                        */
     /* place a wall on each far wall of the maze at some random distance */
     /* to keep from sealing off players, open the adjacent walls         */
 
     /* top wall */
-    // uint8_t val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
-    // map->nodes[0][val].walls[1] = 1;
-    // map->nodes[0][val].walls[2] = 0;
-    // map->nodes[0][val + 1].walls[3] = 1;
-    // map->nodes[0][val + 1].walls[2] = 0;
-    // map->nodes[1][val].walls[0] = 0;
-    // map->nodes[1][val].walls[1] = 0;
-    // map->nodes[1][val + 1].walls[0] = 0;
-    // map->nodes[1][val + 1].walls[3] = 0;
+    uint8_t val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    map->vertical[0][val] = 1;
+    map->vertical[1][val] = 0;
+    map->horizontal[0][val] = 0;
+    map->horizontal[0][val-1] = 0;
 
     // /* bottom wall */
-    // val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
-    // map->nodes[MAP_SIZE - 1][val].walls[1] = 1;
-    // map->nodes[MAP_SIZE - 1][val].walls[0] = 0;
-    // map->nodes[MAP_SIZE - 1][val + 1].walls[3] = 1;
-    // map->nodes[MAP_SIZE - 1][val + 1].walls[0] = 0;
-    // map->nodes[MAP_SIZE - 2][val].walls[2] = 0;
-    // map->nodes[MAP_SIZE - 2][val].walls[1] = 0;
-    // map->nodes[MAP_SIZE - 2][val + 1].walls[2] = 0;
-    // map->nodes[MAP_SIZE - 2][val + 1].walls[3] = 0;
+    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    map->vertical[MAP_SIZE-1][val] = 1;
+    map->vertical[MAP_SIZE-2][val] = 0;
+    map->horizontal[MAP_SIZE-2][val] = 0;
+    map->horizontal[MAP_SIZE-2][val-1] = 0;
 
     // /* left wall */
-    // val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
-    // map->nodes[val][0].walls[2] = 1;
-    // map->nodes[val][0].walls[1] = 0;
-    // map->nodes[val + 1][0].walls[0] = 1;
-    // map->nodes[val + 1][0].walls[1] = 0;
-    // map->nodes[val][1].walls[3] = 0;
-    // map->nodes[val][1].walls[2] = 0;
-    // map->nodes[val + 1][1].walls[0] = 0;
-    // map->nodes[val + 1][1].walls[3] = 0;
+    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    map->horizontal[val][0] = 1;
+    map->horizontal[val][1] = 0;
+    map->vertical[val][0] = 0;
+    map->vertical[val+1][0] = 0;
 
     // /* right wall */
-    // val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
-    // map->nodes[val][MAP_SIZE - 1].walls[2] = 1;
-    // map->nodes[val][MAP_SIZE - 1] .walls[3] = 0;
-    // map->nodes[val + 1][MAP_SIZE - 1].walls[0] = 1;
-    // map->nodes[val + 1][MAP_SIZE - 1].walls[3] = 0;
-    // map->nodes[val][MAP_SIZE - 2].walls[1] = 0;
-    // map->nodes[val][MAP_SIZE - 2].walls[2] = 0;
-    // map->nodes[val + 1][MAP_SIZE - 2].walls[0] = 0;
-    // map->nodes[val + 1][MAP_SIZE - 2].walls[1] = 0;
+    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 2)) + (MAP_SIZE / 4);
+    map->horizontal[val][MAP_SIZE-1] = 1;
+    map->horizontal[val][MAP_SIZE-2] = 0;
+    map->vertical[val][MAP_SIZE-2] = 0;
+    map->vertical[val+1][MAP_SIZE-2] = 0;
 }
 
 

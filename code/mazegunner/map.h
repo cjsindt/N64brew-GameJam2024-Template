@@ -2,7 +2,7 @@
 #define __MAP_GEN_H__
 
 /* ------------------------ MACROS ------------------------- */
-#define MAP_SIZE 5
+#define MAP_SIZE 10
 
 /* ------------------- TYPE DEFINITIONS -------------------- */
 // typedef struct MapNode
@@ -12,7 +12,6 @@
 
 typedef struct Map
 {   
-    //MapNode_T **nodes;
     uint8_t horizontal[MAP_SIZE - 1][MAP_SIZE];
     uint8_t vertical[MAP_SIZE][MAP_SIZE - 1];
 } Map_T;
