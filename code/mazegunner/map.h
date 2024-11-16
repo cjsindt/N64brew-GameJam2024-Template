@@ -5,7 +5,7 @@
 #include <t3d/t3d.h>
 
 /* ------------------------ MACROS ------------------------- */
-#define MAP_SIZE 10
+#define MAP_SIZE 5
 
 /* ------------------- TYPE DEFINITIONS -------------------- */
 typedef struct Map
@@ -21,8 +21,7 @@ typedef struct Map
     T3DMat4 floorMat;
     T3DMat4FP *modelMatFP;
     T3DMat4FP *floorMatFP;
-    rspq_block_t *dplDraw;
-    rspq_block_t *dplFloor;
+    rspq_block_t *dplMap;
 } Map_T;
 
 /* ----------------- FUNCTION DEFINITIONS ------------------ */

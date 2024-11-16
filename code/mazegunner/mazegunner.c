@@ -14,6 +14,7 @@ const MinigameDef minigame_def = {
     .instructions = "A to shoot. Stick to move."
 };
 
+surface_t *depthBuffer;
 Map_T *gameMap;
 
 /*==============================
@@ -22,10 +23,10 @@ Map_T *gameMap;
 ==============================*/
 void minigame_init()
 {
-    // display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE_ANTIALIAS);
-    // depthBuffer = display_get_zbuf();
+    //display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE_ANTIALIAS);
+    //depthBuffer = display_get_zbuf();
 
-    // t3d_init((T3DInitParams){});
+    //t3d_init((T3DInitParams){});
 
     // T3DMat4 modelMat; // matrix for our model, this is a "normal" float matrix
     // t3d_mat4_identity(&modelMat);
@@ -33,16 +34,17 @@ void minigame_init()
     // viewport = t3d_viewport_create();
 
     console_init();
-    gameMap = malloc_uncached(sizeof(Map_T*));
+    gameMap = malloc_uncached(sizeof(Map_T));
+    map_init(gameMap);
     // gameMap = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     // for (int i = 0; i < MAP_SIZE; i++) {
     //     gameMap[i] = malloc_uncached(MAP_SIZE * sizeof(MapNode_t*));
     // }
     printf("Press A to draw new maze\n\n");
-    generate_map(gameMap, 30);
+    //generate_map(gameMap, (core_get_aidifficulty()+1)*30);
     draw_map(gameMap);
-    printf("\nTotal Walls: %d\n", total_walls(gameMap));
-    printf("\nPress B to go back to menu\n");
+    printf("\nTotal Walls: %d\nPrune Factor: %d", total_walls(gameMap), (core_get_aidifficulty()+1)*30);
+    //printf("\nPress B to go back to menu\n");
 }
 
 /*==============================
@@ -72,10 +74,10 @@ void minigame_loop(float deltatime)
         {
             console_clear();
             printf("Press A to draw new maze\n\n");
-            generate_map(gameMap, 30);
+            generate_map(gameMap, (core_get_aidifficulty()+1)*30);
             draw_map(gameMap);
-            printf("\nTotal Walls: %d\n", total_walls(gameMap));
-            printf("\nPress B to go back to menu\n");
+            printf("\nTotal Walls: %d\nPrune Factor: %d", total_walls(gameMap), (core_get_aidifficulty()+1)*30);
+            //printf("\nPress B to go back to menu\n");
         }
 
         if (btn.b)

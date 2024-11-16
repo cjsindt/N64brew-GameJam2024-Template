@@ -1,21 +1,6 @@
 #include <libdragon.h>
 #include "map.h"
-
-
-/**************************************************************
- * map_init()
- *
- * Description: Initialize game map
- *  
- *
- * @param map where to store the game map
- * 
- *************************************************************/
-void map_init(Map_T *map)
-{
-    t3d_mat4_identity(&(map->floorMat));
-    t3d_mat4_identity(&(map->modelMat));
-}
+#include "../../core.h"
 
 
  /*************************************************************
@@ -339,32 +324,63 @@ void generate_map(Map_T *map, uint8_t pruneFactor)
     /* to keep from sealing off players, open the adjacent walls         */
 
     /* top wall */
-    uint8_t val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
+    //uint8_t val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
+    uint8_t val = rand() % (MAP_SIZE - 3) + 2;
     map->vertical[0][val] = 1;
     map->vertical[1][val] = 0;
     map->horizontal[0][val] = 0;
-    map->horizontal[0][val-1] = 0;
+    map->horizontal[0][val+1] = 0;
 
-    // /* bottom wall */
-    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
+    // /* bottom wall */ 
+    //val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
+    val = rand() % (MAP_SIZE - 3) + 2;
     map->vertical[MAP_SIZE-1][val] = 1;
     map->vertical[MAP_SIZE-2][val] = 0;
     map->horizontal[MAP_SIZE-2][val] = 0;
-    map->horizontal[MAP_SIZE-2][val-1] = 0;
+    map->horizontal[MAP_SIZE-2][val+1] = 0;
 
     // /* left wall */
-    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
+    //val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
+    val = rand() % (MAP_SIZE - 3) + 2;
     map->horizontal[val][0] = 1;
     map->horizontal[val][1] = 0;
     map->vertical[val][0] = 0;
     map->vertical[val+1][0] = 0;
 
     // /* right wall */
-    val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
+    //val = rand() % ((MAP_SIZE - (MAP_SIZE / 4)) + 1 - (MAP_SIZE / 4)) + (MAP_SIZE / 4);
+    val = rand() % (MAP_SIZE - 3) + 2;
     map->horizontal[val][MAP_SIZE-1] = 1;
     map->horizontal[val][MAP_SIZE-2] = 0;
     map->vertical[val][MAP_SIZE-2] = 0;
     map->vertical[val+1][MAP_SIZE-2] = 0;
+
+    for (int row = 0; row < MAP_SIZE; row++)
+    {
+        for (int col = 0; col < MAP_SIZE; col++)
+        {
+            printf("%d", maze[row][col]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+    for (int i = 0; i < MAP_SIZE; i++)
+    {
+        for (int j = 0; j < MAP_SIZE - 1; j++)
+        {
+            printf("%d", map->vertical[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+    for (int i = 0; i < MAP_SIZE - 1; i++)
+    {
+        for (int j = 0; j < MAP_SIZE; j++)
+        {
+            printf("%d", map->horizontal[i][j]);
+        }
+        printf("\n");
+    }
 }
 
 
@@ -406,4 +422,26 @@ int total_walls(Map_T *map)
         }
     }
     return total_walls;
+}
+
+/**************************************************************
+ * map_init()
+ *
+ * Description: Initialize game map
+ *  
+ *
+ * @param map where to store the game map
+ * 
+ *************************************************************/
+void map_init(Map_T *map)
+{
+    /* Build the map */
+    generate_map(map, (core_get_aidifficulty()+1)*30);
+
+    /* T3D */
+    t3d_mat4_identity(&(map->floorMat));
+    t3d_mat4_identity(&(map->modelMat));
+    map->floorVertices = malloc_uncached(sizeof(T3DVertPacked) * 2);
+    map->wallVertices = malloc_uncached(sizeof(T3DVertPacked) * 4);
+    
 }
