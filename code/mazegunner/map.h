@@ -5,7 +5,7 @@
 #include <t3d/t3d.h>
 
 /* ------------------------ MACROS ------------------------- */
-#define MAP_SIZE 5
+#define MAP_SIZE 10  // MINIMUM 4
 
 /* ------------------- TYPE DEFINITIONS -------------------- */
 typedef struct Map

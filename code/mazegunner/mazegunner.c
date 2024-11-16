@@ -44,7 +44,7 @@ void minigame_init()
     //generate_map(gameMap, (core_get_aidifficulty()+1)*30);
     draw_map(gameMap);
     printf("\nTotal Walls: %d\nPrune Factor: %d", total_walls(gameMap), (core_get_aidifficulty()+1)*30);
-    //printf("\nPress B to go back to menu\n");
+    printf("\nPress B to go back to menu\n");
 }
 
 /*==============================
@@ -77,7 +77,7 @@ void minigame_loop(float deltatime)
             generate_map(gameMap, (core_get_aidifficulty()+1)*30);
             draw_map(gameMap);
             printf("\nTotal Walls: %d\nPrune Factor: %d", total_walls(gameMap), (core_get_aidifficulty()+1)*30);
-            //printf("\nPress B to go back to menu\n");
+            printf("\nPress B to go back to menu\n");
         }
 
         if (btn.b)

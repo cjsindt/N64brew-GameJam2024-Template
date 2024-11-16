@@ -355,32 +355,6 @@ void generate_map(Map_T *map, uint8_t pruneFactor)
     map->vertical[val][MAP_SIZE-2] = 0;
     map->vertical[val+1][MAP_SIZE-2] = 0;
 
-    for (int row = 0; row < MAP_SIZE; row++)
-    {
-        for (int col = 0; col < MAP_SIZE; col++)
-        {
-            printf("%d", maze[row][col]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-    for (int i = 0; i < MAP_SIZE; i++)
-    {
-        for (int j = 0; j < MAP_SIZE - 1; j++)
-        {
-            printf("%d", map->vertical[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-    for (int i = 0; i < MAP_SIZE - 1; i++)
-    {
-        for (int j = 0; j < MAP_SIZE; j++)
-        {
-            printf("%d", map->horizontal[i][j]);
-        }
-        printf("\n");
-    }
 }
 
 
