@@ -370,9 +370,25 @@ void generate_map(Map_T *map, uint8_t pruneFactor)
 void destroy_map(Map_T *map)
 {
     free_uncached(map->wallVertices);
+    map->wallVertices = NULL;
+
     free_uncached(map->floorVertices);
+    map->floorVertices = NULL;
+
     free_uncached(map->floorMatFP);
+    map->floorMatFP = NULL;
+
     free_uncached(map->modelMatFP);
+    map->modelMatFP = NULL;
+
+    rspq_block_free(map->dplDraw);
+    map->dplDraw = NULL;
+
+    rspq_block_free(map->dplFloor);
+    map->dplFloor = NULL;
+
+    //rspq_block_free(map->dplMap);
+
     free_uncached(map);
     map = NULL;
 }
@@ -496,4 +512,15 @@ void map_init(Map_T *map)
     // for safety, just call it after you are done with all triangles after a load
 
     map->dplDraw = rspq_block_end();
+
+    rspq_block_begin();
+    t3d_matrix_push(map->floorMatFP);
+    t3d_vert_load(map->floorVertices, 0, 4);
+    t3d_matrix_pop(1);
+
+    t3d_tri_draw(0,1,2); t3d_tri_draw(1,2,3);
+
+    t3d_tri_sync();
+
+    map->dplFloor = rspq_block_end();
 }

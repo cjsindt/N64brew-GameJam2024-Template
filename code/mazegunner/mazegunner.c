@@ -41,7 +41,7 @@ void minigame_init()
     
     viewport = t3d_viewport_create();
 
-    console_init();
+    //console_init();
     gameMap = malloc_uncached(sizeof(Map_T));
     map_init(gameMap);
     
@@ -115,26 +115,12 @@ void minigame_loop(float deltatime)
 
     t3d_state_set_drawflags(T3D_FLAG_SHADED | T3D_FLAG_DEPTH);
 
-    t3d_mat4fp_from_srt_euler(gameMap->modelMatFP,
-                            (float[3]){0.125f, 0.125f, 0.125f},
-                            (float[3]){0.0f, 0, 0},
-                            (float[3]){0,0,0});
+    // t3d_mat4fp_from_srt_euler(gameMap->modelMatFP,
+    //                         (float[3]){0.125f, 0.125f, 0.125f},
+    //                         (float[3]){0.0f, 0, 0},
+    //                         (float[3]){0,0,0});
 
     rspq_block_run(gameMap->dplDraw);
-
-    if (!gameMap->dplFloor) {
-        rspq_block_begin();
-        t3d_matrix_push(gameMap->floorMatFP);
-        t3d_vert_load(gameMap->floorVertices, 0, 4);
-        t3d_matrix_pop(1);
-
-        t3d_tri_draw(0,1,2); t3d_tri_draw(1,2,3);
-
-        t3d_tri_sync();
-
-        gameMap->dplFloor = rspq_block_end();
-        
-    }
 
     rspq_block_run(gameMap->dplFloor);
 
@@ -168,6 +154,6 @@ void minigame_loop(float deltatime)
 void minigame_cleanup()
 {
     destroy_map(gameMap);
-    console_clear();
-    console_close();
+    t3d_destroy();
+    display_close();
 }
