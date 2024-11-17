@@ -369,6 +369,10 @@ void generate_map(Map_T *map, uint8_t pruneFactor)
  *************************************************************/
 void destroy_map(Map_T *map)
 {
+    free_uncached(map->wallVertices);
+    free_uncached(map->floorVertices);
+    free_uncached(map->floorMatFP);
+    free_uncached(map->modelMatFP);
     free_uncached(map);
     map = NULL;
 }
@@ -415,7 +419,81 @@ void map_init(Map_T *map)
     /* T3D */
     t3d_mat4_identity(&(map->floorMat));
     t3d_mat4_identity(&(map->modelMat));
+    map->modelMatFP = malloc_uncached(sizeof(T3DMat4FP));
+    map->floorMatFP = malloc_uncached(sizeof(T3DMat4FP));
     map->floorVertices = malloc_uncached(sizeof(T3DVertPacked) * 2);
     map->wallVertices = malloc_uncached(sizeof(T3DVertPacked) * 4);
-    
+    uint32_t wall_color = 0xAAAA88FF;
+    uint16_t norm = t3d_vert_pack_normal(&(T3DVec3){{0, 0, 1}}); // normals are packed in a 5.6.5 format
+    map->wallVertices[0] = (T3DVertPacked){
+        .posA = {-24, -16, 0},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {24, -16, 0},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[1] = (T3DVertPacked){
+        .posA = {24, 16, 0},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {-24, 16, 0},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[2] = (T3DVertPacked){
+        .posA = {-24, -16, 5},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {24, -16, 5},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[3] = (T3DVertPacked){
+        .posA = {24, 16, 5},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {-24, 16, 5},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+
+    map->floorVertices[0] = (T3DVertPacked) {
+        .posA = {-100, 0, -100},
+        .rgbaA = 0x555555FF,
+        .normA = norm,
+        .posB = {100, 0, -100},
+        .rgbaB = 0x555555FF,
+        .normB = norm
+    };
+    map->floorVertices[1] = (T3DVertPacked) {
+        .posA = {-100, 0, 100},
+        .rgbaA = 0x555555FF,
+        .normA = norm,
+        .posB = {100, 0, 100},
+        .rgbaB = 0x555555FF,
+        .normB = norm
+    };
+
+    rspq_block_begin();
+
+    t3d_matrix_push(map->modelMatFP);   // Matrix load can be recorded as they DMA the data in internally
+    t3d_vert_load(map->wallVertices, 0, 8); // load 4 vertices...
+    t3d_matrix_pop(1);             // ...and pop the matrix, this can be done as soon as the vertices are loaded...
+    //t3d_tri_draw(0, 1, 2);         // ...then draw 2 triangles
+    //t3d_tri_draw(2, 3, 0);
+    // Draw the triangles for each face
+    t3d_tri_draw(0, 1, 2); t3d_tri_draw(0, 2, 3); // Front face
+    t3d_tri_draw(4, 5, 6); t3d_tri_draw(4, 6, 7); // Back face
+    t3d_tri_draw(0, 1, 4); t3d_tri_draw(1, 4, 5); // Bottom face
+    t3d_tri_draw(2, 3, 7); t3d_tri_draw(2, 6, 7); // Top face
+    t3d_tri_draw(0, 3, 4); t3d_tri_draw(3, 4, 7); // Left face
+    t3d_tri_draw(1, 2, 5); t3d_tri_draw(2, 5, 6); // Right face
+
+    // NOTE: if you use the builtin model format, syncs are handled automatically!
+    t3d_tri_sync(); // after each batch of triangles, a sync is needed
+    // technically, you only need a sync before any new 't3d_vert_load', rdpq call, or after the last triangle
+    // for safety, just call it after you are done with all triangles after a load
+
+    map->dplDraw = rspq_block_end();
 }

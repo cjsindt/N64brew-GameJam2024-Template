@@ -22,6 +22,8 @@ typedef struct Map
     T3DMat4FP *modelMatFP;
     T3DMat4FP *floorMatFP;
     rspq_block_t *dplMap;
+    rspq_block_t *dplDraw;
+    rspq_block_t *dplFloor;
 } Map_T;
 
 /* ----------------- FUNCTION DEFINITIONS ------------------ */
