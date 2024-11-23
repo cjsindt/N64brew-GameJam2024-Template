@@ -624,7 +624,7 @@ void map_init(Map_T *map)
         }
     }
 
-    // /* Horizontal Walls */
+    /* Horizontal Walls */
     for (int row = 0; row < MAP_SIZE - 1; row++)
     {
         for (int col = 0; col < MAP_SIZE; col++)
@@ -708,41 +708,23 @@ void map_init(Map_T *map)
             triCounter = wallsRemaining;
             wallsRemaining = 0;
         }
-    t3d_matrix_push(map->modelMatFP);   // Matrix load can be recorded as they DMA the data in internally
-    t3d_vert_load(&(map->wallVertices[wallVerticesIndex]), 0, vertLoad); // load 4 vertices...
-    t3d_matrix_pop(1);             // ...and pop the matrix, this can be done as soon as the vertices are loaded...
-    //t3d_tri_draw(0, 1, 2);         // ...then draw 2 triangles
-    //t3d_tri_draw(2, 3, 0);
-    // Draw the triangles for each face
+        t3d_matrix_push(map->modelMatFP);
+        t3d_vert_load(&(map->wallVertices[wallVerticesIndex]), 0, vertLoad);
+        t3d_matrix_pop(1);
 
-        // t3d_tri_draw(0, 1, 2); t3d_tri_draw(0, 2, 3); // Front face
-        // t3d_tri_draw(4, 5, 6); t3d_tri_draw(4, 6, 7); // Back face
-        // t3d_tri_draw(0, 1, 4); t3d_tri_draw(1, 4, 5); // Bottom face
-        // t3d_tri_draw(2, 3, 7); t3d_tri_draw(2, 6, 7); // Top face
-        // t3d_tri_draw(0, 3, 4); t3d_tri_draw(3, 4, 7); // Left face
-        // t3d_tri_draw(1, 2, 5); t3d_tri_draw(2, 5, 6); // Right face
-        
-    for (int i = 0; i < triCounter; i++)
-    {
-        t3d_tri_draw((i*8)+0, (i*8)+1, (i*8)+2); t3d_tri_draw((i*8)+0, (i*8)+2, (i*8)+3); // Front face
-        t3d_tri_draw((i*8)+4, (i*8)+5, (i*8)+6); t3d_tri_draw((i*8)+4, (i*8)+6, (i*8)+7); // Back face
-        t3d_tri_draw((i*8)+0, (i*8)+1, (i*8)+4); t3d_tri_draw((i*8)+1, (i*8)+4, (i*8)+5); // Bottom face
-        t3d_tri_draw((i*8)+2, (i*8)+3, (i*8)+7); t3d_tri_draw((i*8)+2, (i*8)+6, (i*8)+7); // Top face
-        t3d_tri_draw((i*8)+0, (i*8)+3, (i*8)+4); t3d_tri_draw((i*8)+3, (i*8)+4, (i*8)+7); // Left face
-        t3d_tri_draw((i*8)+1, (i*8)+2, (i*8)+5); t3d_tri_draw((i*8)+2, (i*8)+5, (i*8)+6); // Right face
-    }
-    t3d_tri_sync();
-    iteration++;
+        for (int i = 0; i < triCounter; i++)
+        {
+            t3d_tri_draw((i*8)+0, (i*8)+1, (i*8)+2); t3d_tri_draw((i*8)+0, (i*8)+2, (i*8)+3); // Front face
+            t3d_tri_draw((i*8)+4, (i*8)+5, (i*8)+6); t3d_tri_draw((i*8)+4, (i*8)+6, (i*8)+7); // Back face
+            t3d_tri_draw((i*8)+0, (i*8)+1, (i*8)+4); t3d_tri_draw((i*8)+1, (i*8)+4, (i*8)+5); // Bottom face
+            t3d_tri_draw((i*8)+2, (i*8)+3, (i*8)+7); t3d_tri_draw((i*8)+2, (i*8)+6, (i*8)+7); // Top face
+            t3d_tri_draw((i*8)+0, (i*8)+3, (i*8)+4); t3d_tri_draw((i*8)+3, (i*8)+4, (i*8)+7); // Left face
+            t3d_tri_draw((i*8)+1, (i*8)+2, (i*8)+5); t3d_tri_draw((i*8)+2, (i*8)+5, (i*8)+6); // Right face
+        }
+        t3d_tri_sync();
+        iteration++;
     }
 
-    // NOTE: if you use the builtin model format, syncs are handled automatically!
-    // after each batch of triangles, a sync is needed
-    // technically, you only need a sync before any new 't3d_vert_load', rdpq call, or after the last triangle
-    // for safety, just call it after you are done with all triangles after a load
-
-    //map->dplDraw = rspq_block_end();
-
-    //rspq_block_begin();
     t3d_matrix_push(map->floorMatFP);
     t3d_vert_load(map->floorVertices, 0, 4);
     t3d_matrix_pop(1);
@@ -751,6 +733,5 @@ void map_init(Map_T *map)
 
     t3d_tri_sync();
 
-    //map->dplFloor = rspq_block_end();
     map->dplMap = rspq_block_end();
 }
