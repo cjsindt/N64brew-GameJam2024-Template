@@ -5,14 +5,25 @@
 #include <t3d/t3d.h>
 
 /* ------------------------ MACROS ------------------------- */
-#define MAP_SIZE 10  // MINIMUM 4
+
+#define MAP_SIZE 10  // Number of cells in Map is MAP_SIZE * MAP_SIZE; Minimum 4
+
+/* T3D macros */
+/* MAP CONFIG */
+#define CELL_SIZE 3
+#define WALL_THICKNESS 1
+#define WALL_HEIGHT 3
+
+/* calculated config - do not modify */
+#define MAP_SIDE_LENGTH MAP_SIZE * CELL_SIZE
+#define TOTAL_MAP_SIDE_LENGTH MAP_SIDE_LENGTH + (WALL_THICKNESS * (MAP_SIZE + 1))
 
 /* ------------------- TYPE DEFINITIONS -------------------- */
 typedef struct Map
 {   
     /* walls */
-    uint8_t horizontal[MAP_SIZE - 1][MAP_SIZE];
     uint8_t vertical[MAP_SIZE][MAP_SIZE - 1];
+    uint8_t horizontal[MAP_SIZE - 1][MAP_SIZE];
 
     /* T3D */
     T3DVertPacked *wallVertices;
@@ -22,8 +33,6 @@ typedef struct Map
     T3DMat4FP *modelMatFP;
     T3DMat4FP *floorMatFP;
     rspq_block_t *dplMap;
-    rspq_block_t *dplDraw;
-    rspq_block_t *dplFloor;
 } Map_T;
 
 /* ----------------- FUNCTION DEFINITIONS ------------------ */

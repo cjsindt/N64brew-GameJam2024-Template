@@ -381,13 +381,14 @@ void destroy_map(Map_T *map)
     free_uncached(map->modelMatFP);
     map->modelMatFP = NULL;
 
-    rspq_block_free(map->dplDraw);
-    map->dplDraw = NULL;
+    //rspq_block_free(map->dplDraw);
+    //map->dplDraw = NULL;
 
-    rspq_block_free(map->dplFloor);
-    map->dplFloor = NULL;
+    //rspq_block_free(map->dplFloor);
+    //map->dplFloor = NULL;
 
-    //rspq_block_free(map->dplMap);
+    rspq_block_free(map->dplMap);
+    map->dplMap = NULL;
 
     free_uncached(map);
     map = NULL;
@@ -405,7 +406,7 @@ void destroy_map(Map_T *map)
  *************************************************************/
 int total_walls(Map_T *map)
 {
-    int total_walls = MAP_SIZE * 4;
+    int total_walls = 0;    //MAP_SIZE * 4;
 
     for (int i = 0; i < MAP_SIZE; i++)
     {
@@ -438,82 +439,310 @@ void map_init(Map_T *map)
     map->modelMatFP = malloc_uncached(sizeof(T3DMat4FP));
     map->floorMatFP = malloc_uncached(sizeof(T3DMat4FP));
     map->floorVertices = malloc_uncached(sizeof(T3DVertPacked) * 2);
-    map->wallVertices = malloc_uncached(sizeof(T3DVertPacked) * 4);
+
+    /* Wall Vertices = 4 * (4 external walls) + 4 * (number of walls) */
+    int wallVerticesSize = 16 + (total_walls(map) * 4);
+    map->wallVertices = malloc_uncached(sizeof(T3DVertPacked) * wallVerticesSize);
     uint32_t wall_color = 0xAAAA88FF;
     uint16_t norm = t3d_vert_pack_normal(&(T3DVec3){{0, 0, 1}}); // normals are packed in a 5.6.5 format
+    
+    /* external walls */
     map->wallVertices[0] = (T3DVertPacked){
-        .posA = {-24, -16, 0},
+        .posA = {0, 0, 0},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {24, -16, 0},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, 0},
         .rgbaB = wall_color,
         .normB = norm,
     };
     map->wallVertices[1] = (T3DVertPacked){
-        .posA = {24, 16, 0},
+        .posA = {TOTAL_MAP_SIDE_LENGTH, WALL_HEIGHT, 0},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {-24, 16, 0},
+        .posB = {0, WALL_HEIGHT, 0},
         .rgbaB = wall_color,
         .normB = norm,
     };
     map->wallVertices[2] = (T3DVertPacked){
-        .posA = {-24, -16, 5},
+        .posA = {0, 0, WALL_THICKNESS},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {24, -16, 5},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, WALL_THICKNESS},
         .rgbaB = wall_color,
         .normB = norm,
     };
     map->wallVertices[3] = (T3DVertPacked){
-        .posA = {24, 16, 5},
+        .posA = {TOTAL_MAP_SIDE_LENGTH, WALL_HEIGHT, WALL_THICKNESS},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {-24, 16, 5},
+        .posB = {0, WALL_HEIGHT, WALL_THICKNESS},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    /* * */
+    map->wallVertices[4] = (T3DVertPacked){
+        .posA = {0, 0, 0},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {WALL_THICKNESS, 0, 0},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[5] = (T3DVertPacked){
+        .posA = {WALL_THICKNESS, WALL_HEIGHT, 0},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {0, WALL_HEIGHT, 0},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[6] = (T3DVertPacked){
+        .posA = {0, 0, TOTAL_MAP_SIDE_LENGTH},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {WALL_THICKNESS, 0, TOTAL_MAP_SIDE_LENGTH},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[7] = (T3DVertPacked){
+        .posA = {WALL_THICKNESS, WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {0, WALL_HEIGHT, WALL_THICKNESS},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    /* * */
+    map->wallVertices[8] = (T3DVertPacked){
+        .posA = {TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS, 0, 0},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, 0},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[9] = (T3DVertPacked){
+        .posA = {TOTAL_MAP_SIDE_LENGTH, WALL_HEIGHT, 0},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS, WALL_HEIGHT, 0},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[10] = (T3DVertPacked){
+        .posA = {TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS, 0, TOTAL_MAP_SIDE_LENGTH},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, WALL_THICKNESS},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[11] = (T3DVertPacked){
+        .posA = {TOTAL_MAP_SIDE_LENGTH, WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS, WALL_HEIGHT, WALL_THICKNESS},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    /* * */
+    map->wallVertices[12] = (T3DVertPacked){
+        .posA = {0, 0, TOTAL_MAP_SIDE_LENGTH},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, TOTAL_MAP_SIDE_LENGTH},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[13] = (T3DVertPacked){
+        .posA = {TOTAL_MAP_SIDE_LENGTH, WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {0, WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[14] = (T3DVertPacked){
+        .posA = {0, 0, TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS},
+        .rgbaB = wall_color,
+        .normB = norm,
+    };
+    map->wallVertices[15] = (T3DVertPacked){
+        .posA = {TOTAL_MAP_SIDE_LENGTH, WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS},
+        .rgbaA = wall_color,
+        .normA = norm,
+        .posB = {0, WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS},
         .rgbaB = wall_color,
         .normB = norm,
     };
 
+    int wallIndex = 16;
+
+    /* Vertical Walls */
+    for (int row = 0; row < MAP_SIZE; row++)
+    {
+        for (int col = 0; col < MAP_SIZE - 1; col++)
+        {
+            if (map->vertical[row][col])
+            {
+                map->wallVertices[wallIndex++] = (T3DVertPacked){
+                    .posA = {(WALL_THICKNESS + CELL_SIZE) * (col + 1), 0, ((WALL_THICKNESS + CELL_SIZE) * row) + WALL_THICKNESS},
+                    .rgbaA = wall_color,
+                    .normA = norm,
+                    .posB = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, 0, ((WALL_THICKNESS + CELL_SIZE) * row) + WALL_THICKNESS},
+                    .rgbaB = wall_color,
+                    .normB = norm,
+                };
+                map->wallVertices[wallIndex++] = (T3DVertPacked){
+                    .posA = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * row) + WALL_THICKNESS},
+                    .rgbaA = wall_color,
+                    .normA = norm,
+                    .posB = {(WALL_THICKNESS + CELL_SIZE) * (col + 1), WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * row) + WALL_THICKNESS},
+                    .rgbaB = wall_color,
+                    .normB = norm,
+                };
+                map->wallVertices[wallIndex++] = (T3DVertPacked){
+                    .posA = {(WALL_THICKNESS + CELL_SIZE) * (col + 1), 0, ((WALL_THICKNESS + CELL_SIZE) * (row + 1) + WALL_THICKNESS)},
+                    .rgbaA = wall_color,
+                    .normA = norm,
+                    .posB = {(WALL_THICKNESS + CELL_SIZE) * (col + 1) + WALL_THICKNESS, 0, ((WALL_THICKNESS + CELL_SIZE) * (row + 1) + WALL_THICKNESS)},
+                    .rgbaB = wall_color,
+                    .normB = norm,
+                };
+                map->wallVertices[wallIndex++] = (T3DVertPacked){
+                    .posA = {(WALL_THICKNESS + CELL_SIZE) * (col + 1) + WALL_THICKNESS, WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * (row + 1) + WALL_THICKNESS)},
+                    .rgbaA = wall_color,
+                    .normA = norm,
+                    .posB = {(WALL_THICKNESS + CELL_SIZE) * (col + 1), WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * (row + 1) + WALL_THICKNESS)},
+                    .rgbaB = wall_color,
+                    .normB = norm,
+                };
+            }
+        }
+    }
+
+    // /* Horizontal Walls */
+    for (int row = 0; row < MAP_SIZE - 1; row++)
+    {
+        for (int col = 0; col < MAP_SIZE; col++)
+        {
+            if (map->horizontal[row][col])
+            {
+                map->wallVertices[wallIndex++] = (T3DVertPacked){
+                    .posA = {((WALL_THICKNESS + CELL_SIZE) * col) + WALL_THICKNESS, 0, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
+                    .rgbaA = wall_color,
+                    .normA = norm,
+                    .posB = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, 0, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
+                    .rgbaB = wall_color,
+                    .normB = norm,
+                };
+                map->wallVertices[wallIndex++] = (T3DVertPacked){
+                    .posA = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, WALL_HEIGHT, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
+                    .rgbaA = wall_color,
+                    .normA = norm,
+                    .posB = {((WALL_THICKNESS + CELL_SIZE) * col) + WALL_THICKNESS, WALL_HEIGHT, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
+                    .rgbaB = wall_color,
+                    .normB = norm,
+                };
+                map->wallVertices[wallIndex++] = (T3DVertPacked){
+                    .posA = {((WALL_THICKNESS + CELL_SIZE) * col) + WALL_THICKNESS, 0, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
+                    .rgbaA = wall_color,
+                    .normA = norm,
+                    .posB = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, 0, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
+                    .rgbaB = wall_color,
+                    .normB = norm,
+                };
+                map->wallVertices[wallIndex++] = (T3DVertPacked){
+                    .posA = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
+                    .rgbaA = wall_color,
+                    .normA = norm,
+                    .posB = {((WALL_THICKNESS + CELL_SIZE) * col) + WALL_THICKNESS, WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
+                    .rgbaB = wall_color,
+                    .normB = norm,
+                };
+            }
+        }
+    }
+
+    /* floor */
     map->floorVertices[0] = (T3DVertPacked) {
-        .posA = {-100, 0, -100},
+        .posA = {0, 0, 0},
         .rgbaA = 0x555555FF,
         .normA = norm,
-        .posB = {100, 0, -100},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, 0},
         .rgbaB = 0x555555FF,
         .normB = norm
     };
     map->floorVertices[1] = (T3DVertPacked) {
-        .posA = {-100, 0, 100},
+        .posA = {0, 0, TOTAL_MAP_SIDE_LENGTH},
         .rgbaA = 0x555555FF,
         .normA = norm,
-        .posB = {100, 0, 100},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, TOTAL_MAP_SIDE_LENGTH},
         .rgbaB = 0x555555FF,
         .normB = norm
     };
 
     rspq_block_begin();
 
+    int wallsRemaining = total_walls(map);
+    int wallVerticesIndex = 0;
+    int vertLoad = 0;
+    int triCounter = 0;
+    int iteration = 0;
+    while (wallsRemaining)
+    {
+        wallVerticesIndex = iteration * 32;
+        /* 8 or more walls left to draw */
+        if (wallsRemaining > 8)
+        {
+            vertLoad = 64;
+            triCounter = 8;
+            wallsRemaining -= 8;
+        }
+        else
+        {
+            vertLoad = wallsRemaining * 8;
+            triCounter = wallsRemaining;
+            wallsRemaining = 0;
+        }
     t3d_matrix_push(map->modelMatFP);   // Matrix load can be recorded as they DMA the data in internally
-    t3d_vert_load(map->wallVertices, 0, 8); // load 4 vertices...
+    t3d_vert_load(&(map->wallVertices[wallVerticesIndex]), 0, vertLoad); // load 4 vertices...
     t3d_matrix_pop(1);             // ...and pop the matrix, this can be done as soon as the vertices are loaded...
     //t3d_tri_draw(0, 1, 2);         // ...then draw 2 triangles
     //t3d_tri_draw(2, 3, 0);
     // Draw the triangles for each face
-    t3d_tri_draw(0, 1, 2); t3d_tri_draw(0, 2, 3); // Front face
-    t3d_tri_draw(4, 5, 6); t3d_tri_draw(4, 6, 7); // Back face
-    t3d_tri_draw(0, 1, 4); t3d_tri_draw(1, 4, 5); // Bottom face
-    t3d_tri_draw(2, 3, 7); t3d_tri_draw(2, 6, 7); // Top face
-    t3d_tri_draw(0, 3, 4); t3d_tri_draw(3, 4, 7); // Left face
-    t3d_tri_draw(1, 2, 5); t3d_tri_draw(2, 5, 6); // Right face
+
+        // t3d_tri_draw(0, 1, 2); t3d_tri_draw(0, 2, 3); // Front face
+        // t3d_tri_draw(4, 5, 6); t3d_tri_draw(4, 6, 7); // Back face
+        // t3d_tri_draw(0, 1, 4); t3d_tri_draw(1, 4, 5); // Bottom face
+        // t3d_tri_draw(2, 3, 7); t3d_tri_draw(2, 6, 7); // Top face
+        // t3d_tri_draw(0, 3, 4); t3d_tri_draw(3, 4, 7); // Left face
+        // t3d_tri_draw(1, 2, 5); t3d_tri_draw(2, 5, 6); // Right face
+        
+    for (int i = 0; i < triCounter; i++)
+    {
+        t3d_tri_draw((i*8)+0, (i*8)+1, (i*8)+2); t3d_tri_draw((i*8)+0, (i*8)+2, (i*8)+3); // Front face
+        t3d_tri_draw((i*8)+4, (i*8)+5, (i*8)+6); t3d_tri_draw((i*8)+4, (i*8)+6, (i*8)+7); // Back face
+        t3d_tri_draw((i*8)+0, (i*8)+1, (i*8)+4); t3d_tri_draw((i*8)+1, (i*8)+4, (i*8)+5); // Bottom face
+        t3d_tri_draw((i*8)+2, (i*8)+3, (i*8)+7); t3d_tri_draw((i*8)+2, (i*8)+6, (i*8)+7); // Top face
+        t3d_tri_draw((i*8)+0, (i*8)+3, (i*8)+4); t3d_tri_draw((i*8)+3, (i*8)+4, (i*8)+7); // Left face
+        t3d_tri_draw((i*8)+1, (i*8)+2, (i*8)+5); t3d_tri_draw((i*8)+2, (i*8)+5, (i*8)+6); // Right face
+    }
+    t3d_tri_sync();
+    iteration++;
+    }
 
     // NOTE: if you use the builtin model format, syncs are handled automatically!
-    t3d_tri_sync(); // after each batch of triangles, a sync is needed
+    // after each batch of triangles, a sync is needed
     // technically, you only need a sync before any new 't3d_vert_load', rdpq call, or after the last triangle
     // for safety, just call it after you are done with all triangles after a load
 
-    map->dplDraw = rspq_block_end();
+    //map->dplDraw = rspq_block_end();
 
-    rspq_block_begin();
+    //rspq_block_begin();
     t3d_matrix_push(map->floorMatFP);
     t3d_vert_load(map->floorVertices, 0, 4);
     t3d_matrix_pop(1);
@@ -522,5 +751,6 @@ void map_init(Map_T *map)
 
     t3d_tri_sync();
 
-    map->dplFloor = rspq_block_end();
+    //map->dplFloor = rspq_block_end();
+    map->dplMap = rspq_block_end();
 }

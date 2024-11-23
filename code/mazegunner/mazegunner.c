@@ -17,13 +17,13 @@ const MinigameDef minigame_def = {
 surface_t *depthBuffer;
 Map_T *gameMap;
 T3DViewport viewport;
-T3DVec3 rotAxis = {{-1.0f, 2.5f, 0.25f}};;
+T3DVec3 rotAxis = {{0.5f, 1.0f, 0.0f}};;
 float rotAngle;
 uint8_t colorAmbient[4] = {50, 50, 50, 0xFF};
 uint8_t colorDir[4] = {0xFF, 0xFF, 0xFF, 0xFF};
 T3DVec3 lightDirVec = {{0.0f, 0.0f, 1.0f}};
-const T3DVec3 camPos = {{0, -100, -18}};
-const T3DVec3 camTarget = {{0, 0, 0}};
+const T3DVec3 camPos = {{0, 75, 18}};
+const T3DVec3 camTarget = {{10, 0, 10}};
 
 /*==============================
     minigame_init
@@ -58,6 +58,7 @@ void minigame_init()
     // draw_map(gameMap);
     // printf("\nTotal Walls: %d\nPrune Factor: %d", total_walls(gameMap), (core_get_aidifficulty()+1)*30);
     // printf("\nPress B to go back to menu\n");
+    //printf("Total Walls: %d", total_walls(gameMap));
 }
 
 /*==============================
@@ -89,7 +90,7 @@ void minigame_loop(float deltatime)
     // Model-Matrix, t3d offers some basic matrix functions
     t3d_mat4_identity(&(gameMap->modelMat));
     t3d_mat4_rotate(&(gameMap->modelMat), &rotAxis, rotAngle);
-    t3d_mat4_scale(&(gameMap->modelMat), 0.4f, 0.4f, 0.4f);
+    //t3d_mat4_scale(&(gameMap->modelMat), 0.4f, 0.4f, 0.4f);
     t3d_mat4_to_fixed(gameMap->modelMatFP, &(gameMap->modelMat));
 
     // Initialize the floor's model matrix
@@ -120,11 +121,15 @@ void minigame_loop(float deltatime)
     //                         (float[3]){0.0f, 0, 0},
     //                         (float[3]){0,0,0});
 
-    rspq_block_run(gameMap->dplDraw);
+    //rspq_block_run(gameMap->dplDraw);
 
-    rspq_block_run(gameMap->dplFloor);
+    //rspq_block_run(gameMap->dplFloor);
+
+    rspq_block_run(gameMap->dplMap);
 
     rdpq_detach_show();
+
+    //printf("Total Walls: %d", total_walls(gameMap));
 
     for (size_t i = 0; i < core_get_playercount(); i++)
     {
