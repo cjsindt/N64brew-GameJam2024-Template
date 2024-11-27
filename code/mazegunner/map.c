@@ -440,18 +440,21 @@ void map_init(Map_T *map)
     map->floorMatFP = malloc_uncached(sizeof(T3DMat4FP));
     map->floorVertices = malloc_uncached(sizeof(T3DVertPacked) * 2);
 
+    uint8_t palette_size = 4;
+    uint32_t wall_color_palette[4] = {0xED4242FF, 0x2F46F5FF, 0x74F52FFF, 0xC14DF7FF};
+
     /* Wall Vertices = 4 * (4 external walls) + 4 * (number of walls) */
     int wallVerticesSize = 16 + (total_walls(map) * 4);
     map->wallVertices = malloc_uncached(sizeof(T3DVertPacked) * wallVerticesSize);
-    uint32_t wall_color = 0xAAAA88FF;
+    uint32_t wall_color = wall_color_palette[rand() % (palette_size + 1)];
     uint16_t norm = t3d_vert_pack_normal(&(T3DVec3){{0, 0, 1}}); // normals are packed in a 5.6.5 format
     
     /* external walls */
     map->wallVertices[0] = (T3DVertPacked){
-        .posA = {0, 0, 0},
+        .posA = {0, -WALL_HEIGHT, 0},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, 0},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, -WALL_HEIGHT, 0},
         .rgbaB = wall_color,
         .normB = norm,
     };
@@ -464,10 +467,10 @@ void map_init(Map_T *map)
         .normB = norm,
     };
     map->wallVertices[2] = (T3DVertPacked){
-        .posA = {0, 0, WALL_THICKNESS},
+        .posA = {0, -WALL_HEIGHT, WALL_THICKNESS},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, WALL_THICKNESS},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, -WALL_HEIGHT, WALL_THICKNESS},
         .rgbaB = wall_color,
         .normB = norm,
     };
@@ -481,10 +484,10 @@ void map_init(Map_T *map)
     };
     /* * */
     map->wallVertices[4] = (T3DVertPacked){
-        .posA = {0, 0, 0},
+        .posA = {0, -WALL_HEIGHT, 0},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {WALL_THICKNESS, 0, 0},
+        .posB = {WALL_THICKNESS, -WALL_HEIGHT, 0},
         .rgbaB = wall_color,
         .normB = norm,
     };
@@ -497,10 +500,10 @@ void map_init(Map_T *map)
         .normB = norm,
     };
     map->wallVertices[6] = (T3DVertPacked){
-        .posA = {0, 0, TOTAL_MAP_SIDE_LENGTH},
+        .posA = {0, -WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {WALL_THICKNESS, 0, TOTAL_MAP_SIDE_LENGTH},
+        .posB = {WALL_THICKNESS, -WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH},
         .rgbaB = wall_color,
         .normB = norm,
     };
@@ -514,10 +517,10 @@ void map_init(Map_T *map)
     };
     /* * */
     map->wallVertices[8] = (T3DVertPacked){
-        .posA = {TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS, 0, 0},
+        .posA = {TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS, -WALL_HEIGHT, 0},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, 0},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, -WALL_HEIGHT, 0},
         .rgbaB = wall_color,
         .normB = norm,
     };
@@ -530,10 +533,10 @@ void map_init(Map_T *map)
         .normB = norm,
     };
     map->wallVertices[10] = (T3DVertPacked){
-        .posA = {TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS, 0, TOTAL_MAP_SIDE_LENGTH},
+        .posA = {TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS, -WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, WALL_THICKNESS},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, -WALL_HEIGHT, WALL_THICKNESS},
         .rgbaB = wall_color,
         .normB = norm,
     };
@@ -547,10 +550,10 @@ void map_init(Map_T *map)
     };
     /* * */
     map->wallVertices[12] = (T3DVertPacked){
-        .posA = {0, 0, TOTAL_MAP_SIDE_LENGTH},
+        .posA = {0, -WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, TOTAL_MAP_SIDE_LENGTH},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, -WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH},
         .rgbaB = wall_color,
         .normB = norm,
     };
@@ -563,10 +566,10 @@ void map_init(Map_T *map)
         .normB = norm,
     };
     map->wallVertices[14] = (T3DVertPacked){
-        .posA = {0, 0, TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS},
+        .posA = {0, -WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS},
         .rgbaA = wall_color,
         .normA = norm,
-        .posB = {TOTAL_MAP_SIDE_LENGTH, 0, TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS},
+        .posB = {TOTAL_MAP_SIDE_LENGTH, -WALL_HEIGHT, TOTAL_MAP_SIDE_LENGTH - WALL_THICKNESS},
         .rgbaB = wall_color,
         .normB = norm,
     };

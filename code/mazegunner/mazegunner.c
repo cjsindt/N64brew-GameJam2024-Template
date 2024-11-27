@@ -17,13 +17,18 @@ const MinigameDef minigame_def = {
 surface_t *depthBuffer;
 Map_T *gameMap;
 T3DViewport viewport;
+T3DViewport viewports[MAXPLAYERS];
 T3DVec3 rotAxis = {{0.5f, 1.0f, 0.0f}};;
 float rotAngle;
 uint8_t colorAmbient[4] = {50, 50, 50, 0xFF};
 uint8_t colorDir[4] = {0xFF, 0xFF, 0xFF, 0xFF};
 T3DVec3 lightDirVec = {{0.0f, 0.0f, 1.0f}};
-const T3DVec3 camPos = {{0, 75, 18}};
-const T3DVec3 camTarget = {{10, 0, 10}};
+// const T3DVec3 camPos = {{0, 75, 18}};
+// const T3DVec3 camTarget = {{10, 0, 10}};
+T3DVec3 camPos;
+T3DVec3 camTarget;
+int sizeX;
+int sizeY;
 
 /*==============================
     minigame_init
@@ -40,6 +45,18 @@ void minigame_init()
     t3d_mat4_identity(&modelMat);
     
     viewport = t3d_viewport_create();
+
+    sizeX = display_get_width();
+    sizeY = display_get_height();
+
+    viewports[0] = t3d_viewport_create();
+    viewports[1] = t3d_viewport_create();
+    viewports[2] = t3d_viewport_create();
+    viewports[3] = t3d_viewport_create();
+    t3d_viewport_set_area(&viewports[0], 0, 0, sizeX / 2, sizeY / 2);                 // top left
+    t3d_viewport_set_area(&viewports[1], sizeX / 2, 0, sizeX / 2, sizeY / 2);         // top right
+    t3d_viewport_set_area(&viewports[2], 0, sizeY / 2, sizeX / 2, sizeY / 2);         // bottom left
+    t3d_viewport_set_area(&viewports[3], sizeX / 2, sizeY / 2, sizeX / 2, sizeY / 2); // bottom right
 
     //console_init();
     gameMap = malloc_uncached(sizeof(Map_T));
@@ -81,21 +98,21 @@ void minigame_fixedloop(float deltatime)
 void minigame_loop(float deltatime)
 {
         // ======== Update ======== //
-    rotAngle += 0.03f;
+    //rotAngle += 0.03f;
 
     // we can set up our viewport settings beforehand here
-    t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(85.0f), 10.0f, 100.0f);
-    t3d_viewport_look_at(&viewport, &camPos, &camTarget, &(T3DVec3){{0, 1, 0}});
+    //t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(60.0f), 10.0f, 100.0f);
+    //t3d_viewport_look_at(&viewport, &camPos, &camTarget, &(T3DVec3){{0, 1, 0}});
 
     // Model-Matrix, t3d offers some basic matrix functions
     t3d_mat4_identity(&(gameMap->modelMat));
-    t3d_mat4_rotate(&(gameMap->modelMat), &rotAxis, rotAngle);
+    //t3d_mat4_rotate(&(gameMap->modelMat), &rotAxis, rotAngle);
     //t3d_mat4_scale(&(gameMap->modelMat), 0.4f, 0.4f, 0.4f);
     t3d_mat4_to_fixed(gameMap->modelMatFP, &(gameMap->modelMat));
 
     // Initialize the floor's model matrix
     t3d_mat4_identity(&(gameMap->floorMat));
-    t3d_mat4_rotate(&(gameMap->floorMat), &rotAxis, rotAngle);
+    //t3d_mat4_rotate(&(gameMap->floorMat), &rotAxis, rotAngle);
     t3d_mat4_translate(&(gameMap->floorMat), 0.0f, -1.0f, 0.0f); // Move the floor into place
     t3d_mat4_to_fixed(gameMap->floorMatFP, &(gameMap->floorMat));          // Update floorMatFP with the new floor matrix
 
@@ -103,7 +120,7 @@ void minigame_loop(float deltatime)
     rdpq_attach(display_get(), display_get_zbuf()); // set the target to draw to
     t3d_frame_start();                              // call this once per frame at the beginning of your draw function
 
-    t3d_viewport_attach(&viewport); // now use the viewport, this applies proj/view matrices and sets scissoring
+    //t3d_viewport_attach(&viewport); // now use the viewport, this applies proj/view matrices and sets scissoring
 
     rdpq_mode_combiner(RDPQ_COMBINER_SHADE);
     // this cleans the entire screen (even if out viewport is smaller)
@@ -113,6 +130,50 @@ void minigame_loop(float deltatime)
     t3d_light_set_ambient(colorAmbient);                  // one global ambient light, always active
     t3d_light_set_directional(0, colorDir, &lightDirVec); // optional directional light, can be disabled
     t3d_light_set_count(1);
+
+    for (int v = 0; v < MAXPLAYERS; v++)
+    {
+        T3DViewport *vp = &viewports[v];
+        float distance = 50.0f; // Distance behind the player
+        float height = 40.0f;   // Height above the player
+
+        // Calculate the position of the camera behind the player based on their rotation
+        // camPos = (T3DVec3){{players[v].playerPos.v[0] - fm_cosf(players[v].rotY) * distance,
+        //                     players[v].playerPos.v[1] + height,
+        //                     players[v].playerPos.v[2] + fm_sinf(players[v].rotY) * distance}};
+
+        camPos = (T3DVec3){{(WALL_THICKNESS + (CELL_SIZE / 2)),
+                            WALL_HEIGHT / 2,
+                            (WALL_THICKNESS + (CELL_SIZE / 2))}};
+
+        // Calculate the target position slightly ahead of the player based on their rotation
+        // camTarget = (T3DVec3){{players[v].playerPos.v[0] + fm_sinf(players[v].rotY),
+        //                     players[v].playerPos.v[1] + 9.0f, // Adjust height to center target around player's head/upper body
+        //                     players[v].playerPos.v[2] + fm_cosf(players[v].rotY)}};
+
+        camTarget = (T3DVec3){{TOTAL_MAP_SIDE_LENGTH / 2,
+                                WALL_HEIGHT / 2,
+                                TOTAL_MAP_SIDE_LENGTH / 2}};
+        // Like in all other examples, set up the projection (only really need to do it once) and view matrix here
+        // after that apply the viewport and draw your scene
+        // Since each of the viewport-structs has its own matrices, no conflicts will occur
+        t3d_viewport_set_projection(vp, T3D_DEG_TO_RAD(60.0f), 2.0f, 200.0f);
+        t3d_viewport_look_at(vp, &camPos, &camTarget, &(T3DVec3){{0, 1, 0}});
+        t3d_viewport_attach(vp);
+
+        rspq_block_run(gameMap->dplMap);
+
+    }
+
+    // ======== Draw (2D) ======== //
+    rdpq_sync_pipe();
+    rdpq_set_scissor(0, 0, sizeX, sizeY);
+    rdpq_set_mode_standard();
+    rdpq_set_mode_fill(RGBA32(0, 0, 0, 0xFF));
+
+    // draw thick lines between the screens
+    rdpq_fill_rectangle(0, sizeY/2-1, sizeX, sizeY/2+1);
+    rdpq_fill_rectangle(sizeX/2-1, 0, sizeX/2+1, sizeY);
 
     t3d_state_set_drawflags(T3D_FLAG_SHADED | T3D_FLAG_DEPTH);
 
@@ -125,7 +186,7 @@ void minigame_loop(float deltatime)
 
     //rspq_block_run(gameMap->dplFloor);
 
-    rspq_block_run(gameMap->dplMap);
+
 
     rdpq_detach_show();
 
