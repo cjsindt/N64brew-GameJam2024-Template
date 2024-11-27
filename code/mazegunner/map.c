@@ -589,18 +589,18 @@ void map_init(Map_T *map)
             if (map->vertical[row][col])
             {
                 map->wallVertices[wallIndex++] = (T3DVertPacked){
-                    .posA = {(WALL_THICKNESS + CELL_SIZE) * (col + 1), 0, ((WALL_THICKNESS + CELL_SIZE) * row) + WALL_THICKNESS},
+                    .posA = {(WALL_THICKNESS + CELL_SIZE) * (col + 1), 0, ((WALL_THICKNESS + CELL_SIZE) * row)},
                     .rgbaA = wall_color,
                     .normA = norm,
-                    .posB = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, 0, ((WALL_THICKNESS + CELL_SIZE) * row) + WALL_THICKNESS},
+                    .posB = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, 0, ((WALL_THICKNESS + CELL_SIZE) * row)},
                     .rgbaB = wall_color,
                     .normB = norm,
                 };
                 map->wallVertices[wallIndex++] = (T3DVertPacked){
-                    .posA = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * row) + WALL_THICKNESS},
+                    .posA = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * row)},
                     .rgbaA = wall_color,
                     .normA = norm,
-                    .posB = {(WALL_THICKNESS + CELL_SIZE) * (col + 1), WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * row) + WALL_THICKNESS},
+                    .posB = {(WALL_THICKNESS + CELL_SIZE) * (col + 1), WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * row)},
                     .rgbaB = wall_color,
                     .normB = norm,
                 };
@@ -632,7 +632,7 @@ void map_init(Map_T *map)
             if (map->horizontal[row][col])
             {
                 map->wallVertices[wallIndex++] = (T3DVertPacked){
-                    .posA = {((WALL_THICKNESS + CELL_SIZE) * col) + WALL_THICKNESS, 0, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
+                    .posA = {((WALL_THICKNESS + CELL_SIZE) * col), 0, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
                     .rgbaA = wall_color,
                     .normA = norm,
                     .posB = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, 0, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
@@ -643,12 +643,12 @@ void map_init(Map_T *map)
                     .posA = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, WALL_HEIGHT, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
                     .rgbaA = wall_color,
                     .normA = norm,
-                    .posB = {((WALL_THICKNESS + CELL_SIZE) * col) + WALL_THICKNESS, WALL_HEIGHT, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
+                    .posB = {((WALL_THICKNESS + CELL_SIZE) * col), WALL_HEIGHT, (WALL_THICKNESS + CELL_SIZE) * (row + 1)},
                     .rgbaB = wall_color,
                     .normB = norm,
                 };
                 map->wallVertices[wallIndex++] = (T3DVertPacked){
-                    .posA = {((WALL_THICKNESS + CELL_SIZE) * col) + WALL_THICKNESS, 0, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
+                    .posA = {((WALL_THICKNESS + CELL_SIZE) * col), 0, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
                     .rgbaA = wall_color,
                     .normA = norm,
                     .posB = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, 0, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
@@ -659,7 +659,7 @@ void map_init(Map_T *map)
                     .posA = {((WALL_THICKNESS + CELL_SIZE) * (col + 1)) + WALL_THICKNESS, WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
                     .rgbaA = wall_color,
                     .normA = norm,
-                    .posB = {((WALL_THICKNESS + CELL_SIZE) * col) + WALL_THICKNESS, WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
+                    .posB = {((WALL_THICKNESS + CELL_SIZE) * col), WALL_HEIGHT, ((WALL_THICKNESS + CELL_SIZE) * (row + 1)) + WALL_THICKNESS},
                     .rgbaB = wall_color,
                     .normB = norm,
                 };
